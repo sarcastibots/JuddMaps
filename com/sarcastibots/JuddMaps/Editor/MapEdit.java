@@ -11,9 +11,8 @@ import java.beans.*;
 
 /**
  * map editor. This class may be quite hacky. <p>
- * Map editor is curently able to do one layer maps.
- * I intend to extend this to three-layer maps, and
- * to introduce some more interesting tiles to the set.
+ * Map editor is curently able to do three-layer maps.
+ * I intend to introduce some more interesting tiles to the set.
  */
 public class MapEdit implements ActionListener, ChangeListener, KeyListener
 {
@@ -43,14 +42,17 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
     GraphicsBank gfx;           // Graphics bank used by this scene. All the tiles.
 
 
-    /* Toolbar buttons, self-explanatory */
+    /** Layer combo */
+    JComboBox<String>  layerCombo;
+    
+    /** Toolbar buttons, self-explanatory */
     JToolBar      outerToolBar;
     JToolBar      innerToolBar;
     JButton       newBtn;
     JButton       openBtn;
     JButton       saveBtn;
     JButton       clearBtn;
-    JToggleButton layerButtons[];
+//    JToggleButton layerButtons[];
     JToggleButton hideBtn;
     JToggleButton gridBtn;
     JButton       shiftRightBtn;
@@ -320,15 +322,17 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	newBtn   = makeBtn("New",     "/icons/new.gif",   "New map");
 	clearBtn = makeBtn("Clear",   "/icons/clear.gif", "Reset map (Delete all tiles)");
 
-	/* TODO paraeterize implement better names Layer buttons. */ 
-	ButtonGroup layerGroup = new ButtonGroup();
-	layerButtons = new JToggleButton[Map.LAYERS];
-	layerButtons[2] = makeToggleBtn("Layer 3", "/icons/top.gif",    "Edit the top layer");
-	layerButtons[1] = makeToggleBtn("Layer 2", "/icons/mid.gif",    "Edit the middle layer");
-	layerButtons[0] = makeToggleBtn("Layer 1", "/icons/bottom.gif", "Edit the bottom layer");
-	layerGroup.add(layerButtons[0]);
-	layerGroup.add(layerButtons[1]);
-	layerGroup.add(layerButtons[2]);
+	/* TODO parameterize implement better names Layer buttons. */ 
+	this.layerCombo = new JComboBox<String>( new String[] {"bottom layer", "middle layer", "top layer"});
+	layerCombo.addActionListener(this);
+//	ButtonGroup layerGroup = new ButtonGroup();
+//	layerButtons = new JToggleButton[Map.LAYERS];
+//	layerButtons[2] = makeToggleBtn("Layer 3", "/icons/top.gif",    "Edit the top layer");
+//	layerButtons[1] = makeToggleBtn("Layer 2", "/icons/mid.gif",    "Edit the middle layer");
+//	layerButtons[0] = makeToggleBtn("Layer 1", "/icons/bottom.gif", "Edit the bottom layer");
+//	layerGroup.add(layerButtons[0]);
+//	layerGroup.add(layerButtons[1]);
+//	layerGroup.add(layerButtons[2]);
 
 	/* Visual buttons */
 	gridBtn     = makeToggleBtn("Grid",              "/icons/grid.gif",    "Show/Hide Grid");
@@ -382,9 +386,10 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	outerToolBar.add(fillBtn);
 
 	outerToolBar.addSeparator();
-	outerToolBar.add(layerButtons[2]);
-	outerToolBar.add(layerButtons[1]);
-	outerToolBar.add(layerButtons[0]);
+	outerToolBar.add(layerCombo);
+//	outerToolBar.add(layerButtons[2]);
+//	outerToolBar.add(layerButtons[1]);
+//	outerToolBar.add(layerButtons[0]);
 
 	outerToolBar.addSeparator();
 	outerToolBar.add(hideBtn);
@@ -420,7 +425,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	innerToolBar.addSeparator();
 
 	gridBtn.setSelected(true);
-	layerButtons[0].setSelected(true);
+//	layerButtons[0].setSelected(true);
     }
 
 
@@ -478,12 +483,14 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	} else if (source == clearBtn) {
 	    map.clear();
 	    mapPanel.repaint();
-	} else if (source == layerButtons[0]) {
-	    mapPanel.setActiveLayer(0);
-	} else if (source == layerButtons[1]) {
-	    mapPanel.setActiveLayer(1);
-	} else if (source == layerButtons[2]) {
-	    mapPanel.setActiveLayer(2);
+	} else if (source == layerCombo) { //TODO listen for text change events so things can be renamed
+	    mapPanel.setActiveLayer(layerCombo.getSelectedIndex());
+//	} else if (source == layerButtons[0]) {
+//	    mapPanel.setActiveLayer(0);
+//	} else if (source == layerButtons[1]) {
+//	    mapPanel.setActiveLayer(1);
+//	} else if (source == layerButtons[2]) {
+//	    mapPanel.setActiveLayer(2);
 	} else if (source == hideBtn) {
 	    mapPanel.setHideLayers(hideBtn.isSelected());
 	    mapPanel.repaint();
