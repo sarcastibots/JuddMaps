@@ -57,7 +57,7 @@ public class Map
 	this.layerHeight = height;
 	this.layerWidth = width;
 	layers = new ArrayList<>();
-	layers.add( new Layer(width, height, Layer.GROUND));
+	layers.add( new Layer(width, height, Layer.GROUND, "Ground"));
 	this.addLayers(3);
 	changeListeners = new ArrayList<>();
     }
@@ -154,27 +154,7 @@ public class Map
     }
 
     public void render(Graphics g, Point origin, Dimension size, int layer) {
-	//System.out.println("Render Map");
-
-	Point zoomVector = new Point();
-	zoomVector.x = zoomWidth;
-	zoomVector.y = zoomHeight;
-//	layers.get(layer).render(g, origin, size, zoomVector);
-	    
-	double minX = Math.max(origin.getX()/zoomWidth, 0);
-	double maxX = Math.min((origin.getX()+size.getWidth())/zoomWidth, layerWidth);
-
-	double minY = Math.max(origin.getY()/zoomHeight, 0);
-	double maxY = Math.min((origin.getY()+size.getHeight())/zoomHeight, layerHeight);
-	int z = layer;
-	for(int y=(int)minY; y<maxY; y++) {
-	    for(int x=(int)minX; x<maxX;  x++) {
-		Tile tile = layers.get(z).getTile(x, y);
-		if(tile != null) {
-		    tile.render(g, x*zoomWidth+zoomWidth, y*zoomHeight+zoomHeight);
-		}
-	    }
-	}
+	layers.get(layer).render(g, origin, size, zoomWidth, zoomHeight);
     }
 
     /**
@@ -263,7 +243,7 @@ public class Map
 
     private void addLayers(int newLayers) {
 	for ( int i = layers.size(); i < newLayers; i++) {
-	    layers.add( new Layer( layerWidth, layerHeight, Layer.SPRITE) );
+	    layers.add( new Layer( layerWidth, layerHeight, Layer.SPRITE, "Sprite " + String.valueOf(i) ));
 	}
     }
 
@@ -358,6 +338,20 @@ public class Map
     public void fireChangedEvent(boolean m) {
 	Iterator<MapChangeListener> i = changeListeners.iterator();
 	((MapChangeListener)i.next()).mapChanged(m);
+    }
+
+
+    public int getLayerCount() {
+	return this.layers.size();
+    }
+
+
+    public String[] getLayerNames() {
+	String[] names = new String[layers.size()];
+	for ( int i = 0; i < names.length; i++ ) {
+	    names[i] = layers.get(i).name;
+	}
+	return names;
     }
 
 

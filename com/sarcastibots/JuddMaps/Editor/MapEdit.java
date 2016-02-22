@@ -52,6 +52,9 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
     JButton       openBtn;
     JButton       saveBtn;
     JButton       clearBtn;
+    
+    JButton	  addLayerBtn;
+    JButton	  removeLayerBtn;
 //    JToggleButton layerButtons[];
     JToggleButton hideBtn;
     JToggleButton gridBtn;
@@ -322,9 +325,11 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	newBtn   = makeBtn("New",     "/icons/new.gif",   "New map");
 	clearBtn = makeBtn("Clear",   "/icons/clear.gif", "Reset map (Delete all tiles)");
 
-	/* TODO parameterize implement better names Layer buttons. */ 
-	this.layerCombo = new JComboBox<String>( new String[] {"bottom layer", "middle layer", "top layer"});
+	/* TODO this will break if map is initialized after tool bars. */ 
+	this.layerCombo = new JComboBox<String>( map.getLayerNames() );
 	layerCombo.addActionListener(this);
+	addLayerBtn = makeBtn("+ Layer", "/icons/addLayer.png", "Add a layer");
+	removeLayerBtn = makeBtn("- Layer", "/icons/removeLayer.png", "Remove a layer");
 //	ButtonGroup layerGroup = new ButtonGroup();
 //	layerButtons = new JToggleButton[Map.LAYERS];
 //	layerButtons[2] = makeToggleBtn("Layer 3", "/icons/top.gif",    "Edit the top layer");
@@ -387,6 +392,8 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 
 	outerToolBar.addSeparator();
 	outerToolBar.add(layerCombo);
+	outerToolBar.add(addLayerBtn);
+	outerToolBar.add(removeLayerBtn);
 //	outerToolBar.add(layerButtons[2]);
 //	outerToolBar.add(layerButtons[1]);
 //	outerToolBar.add(layerButtons[0]);
@@ -485,6 +492,14 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	    mapPanel.repaint();
 	} else if (source == layerCombo) { //TODO listen for text change events so things can be renamed
 	    mapPanel.setActiveLayer(layerCombo.getSelectedIndex());
+	} else if (source == addLayerBtn ) {
+	    map.resize(map.getWidth(), map.getHeight(), map.getLayerCount() + 1);
+	    updateLayerComboItems();
+	    mapPanel.setMap(map);
+	} else if (source == removeLayerBtn ) {
+	    map.resize(map.getWidth(), map.getHeight(), map.getLayerCount() - 1);
+	    updateLayerComboItems();
+	    mapPanel.setMap(map);
 //	} else if (source == layerButtons[0]) {
 //	    mapPanel.setActiveLayer(0);
 //	} else if (source == layerButtons[1]) {
@@ -659,8 +674,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	return tileChooser.getSelectedTile();
     }
 
-    private void setGraphicsBank(GraphicsBank gfx)
-    {
+    private void setGraphicsBank(GraphicsBank gfx) {
 	this.gfx = gfx;
 	scene.setTileset(gfx);
 	chooserPanel.removeAll();
@@ -707,10 +721,8 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
     /**
      * Opens the map file.
      **/
-    public void openFile(File file)
-    {
-	try
-	{
+    public void openFile(File file) {
+	try {
 	    zoomLevel = 1;
 	    scene = Scene.loadScene(file);
 	    map = scene.getMap();
@@ -732,8 +744,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	    mapPanel.validate();
 	    mainFrame.repaint();
 	}
-	catch(IOException e)
-	{
+	catch(IOException e) {
 	    System.out.println("Invalid Map File. " + e);
 	}
 
@@ -743,8 +754,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
      * creates a new scene with a new map, 10 by 10 null tiles,
      * and an empty list of sprites.
      **/
-    public void newFile()
-    {
+    public void newFile() {
 	/*
     GraphicsBank gfx = new GraphicsBank();
     try {
@@ -759,7 +769,14 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	setGraphicsBank(scene.getTileset());
 	mapPanel.setMap(map);
 	mapPanel.repaint();
+	updateLayerComboItems();
 	mainFrame.validate();
+    }
+
+
+    private void updateLayerComboItems() {
+	DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>( map.getLayerNames() );
+	this.layerCombo.setModel(model);
     }
 
 

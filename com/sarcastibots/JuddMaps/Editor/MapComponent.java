@@ -37,8 +37,7 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 
     JViewport viewport;
 
-    public MapComponent(Map m, MapEdit me)
-    {
+    public MapComponent(Map m, MapEdit me) {
 	this.map = m;
 	this.mapEdit = me;
 	width = m.getWidth();
@@ -55,12 +54,11 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 	stateChanged = true;
     }
 
-    public void setViewport(JViewport vp)
-    {
+    public void setViewport(JViewport vp) {
 	this.viewport = vp;
     }
-    synchronized public void setMap(Map m)
-    {
+    
+    synchronized public void setMap(Map m) {
 	this.map = m;
 
 	width = m.getWidth();
@@ -89,20 +87,17 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
      * onto the given graphics context.
      * also draws a grid...
      */
-    synchronized public void paintComponent(Graphics g)
-    {
+    synchronized public void paintComponent(Graphics g) {
 	g.setColor(Color.white);
 	g.fillRect(0,0,width*tileWidth, height*tileHeight);
 
 	//as the tiles are drawn with the origin at the
 	//bottom right, but the component's origin is the top left,
 	//we need to set the offset so we can see the tiles
-	if(hideLayers)
-	{
+	if(hideLayers) {
 	    map.render(g, viewport.getViewPosition(), viewport.getSize(), activeLayer);
 	}
-	else
-	{
+	else {
 	    map.render(g, viewport.getViewPosition(), viewport.getSize());
 	}
 
@@ -132,8 +127,7 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
     /**
      * change the given tile to the one selected in the map editor.
      */
-    public void mapClicked(int x, int y)
-    {
+    public void mapClicked(int x, int y) {
 	x = x/tileWidth;
 	y = y/tileHeight;
 	if(x < map.getWidth() && x >= 0
@@ -216,15 +210,10 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 
 
 
-    public void setActiveLayer(int layer)
-    {
-	if (layer >= 0 && layer <3)
-	{
-	    activeLayer = layer;
-	}
+    public void setActiveLayer(int layer) {
+	activeLayer = layer;
     }
-    public int getActiveLayer()
-    {
+    public int getActiveLayer() {
 	return activeLayer;
     }
 
@@ -232,18 +221,16 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
     boolean btn2Pressed = false;
     int oldX = 0;
     int oldY = 0;
-    public void mousePressed(MouseEvent e)
-    {
+    public void mousePressed(MouseEvent e) {
 	if(stateChanged) {
 	    saveUndoState();
 	    stateChanged = false;
 	}
-	switch(e.getButton())
-	{
+	switch(e.getButton()) {
 	case MouseEvent.BUTTON1: btn1Pressed = true;
-	mapClicked(e.getX(), e.getY());
-	this.repaint();
-	break;
+	    mapClicked(e.getX(), e.getY());
+	    this.repaint();
+	    break;
 	/*
 			default:
 				btn2Pressed = true;
@@ -257,20 +244,15 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 
 	default:
 	    btn2Pressed = true;
-
-
 	    grabX = e.getX();
 	    grabY = e.getY();
 	    System.out.println("Grab at "+grabX+", "+grabY);
-
-
 	    break;
 	}
     }
-    public void mouseReleased(MouseEvent e)
-    {
-	switch(e.getButton())
-	{
+    
+    public void mouseReleased(MouseEvent e) {
+	switch(e.getButton()) {
 	case MouseEvent.BUTTON1:
 	    btn1Pressed = false;
 	    oldX = e.getX();
@@ -290,19 +272,16 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 	    break;
 	}
     }
-    public void mouseEntered(MouseEvent e)
-    {
+    public void mouseEntered(MouseEvent e) {
     }
-    public void mouseDragged(MouseEvent e)
-    {
-	if(btn1Pressed && mapEdit.getPaintMode() != MapEdit.PAINT_FILL)
-	{
+    
+    public void mouseDragged(MouseEvent e) {
+	if(btn1Pressed && mapEdit.getPaintMode() != MapEdit.PAINT_FILL) {
 	    mapClicked(e.getX(), e.getY());
 	    //System.out.println(mapEdit.getSelectedTile());
 	    this.repaint();
 	}
-	else if(btn2Pressed)
-	{
+	else if(btn2Pressed) {
 	    int offX = e.getX() - grabX;
 	    int offY = e.getY() - grabY;
 	    Point p = viewport.getViewPosition();
@@ -312,8 +291,8 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 	    dragged = true;
 	}
     }
-    public void mouseExited(MouseEvent e)
-    {
+    
+    public void mouseExited(MouseEvent e) {
 
     }
     public void mouseClicked(MouseEvent e) {

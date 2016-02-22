@@ -21,10 +21,12 @@ public class Layer {
     private int gridWidth, gridHeight;
 
     private int layerType;
+    private boolean visible;
 
-    public Layer(int width, int height, int type) {
+    public Layer(int width, int height, int type, String name) {
 	this.gridWidth = width;
 	this.gridHeight = height;
+	this.name = name;
 	this.setLayerType(type);
 
 	// provide starting size argument to reduce resizes
@@ -32,6 +34,8 @@ public class Layer {
 	for ( int i = 0; i < gridWidth; i++ ) {
 	    grid.add( newColumn() );
 	}
+	
+	visible = true;
     }
 
     private List<Tile> newColumn() {
@@ -50,21 +54,19 @@ public class Layer {
      * @param size
      * @param layer
      */
-    public void render(Graphics g, Point origin, Dimension size, Point zoomVector) {
-	//	//System.out.println("Render Map");
+    public void render(Graphics g, Point origin, Dimension size, int zoomWidth, int zoomHeight) {
+	if (visible) {
+	    double minX = Math.max(origin.getX()/zoomWidth, 0);
+	    double maxX = Math.min((origin.getX()+size.getWidth())/zoomWidth, gridWidth);
 
-	double minX = Math.max(origin.getX()/zoomVector.getX(), 0);
-	double maxX = Math.min((origin.getX()+size.getWidth())/zoomVector.getX(), gridWidth);
-
-	double minY = Math.max(origin.getY()/zoomVector.getY(), 0);
-	double maxY = Math.min((origin.getY()+size.getHeight())/zoomVector.getY(), gridHeight);
-	for(int y = (int)minY; y < maxY; y++) {
-	    for(int x = (int)minX; x < maxX;  x++) {
-		//Integer tile = grid.get(y*gridWidth + x);
-		Tile tile = getTile(x, y);
-		if(tile != null) {
-		    tile.render(g, x, y);
-		    //TileFlyWeight.get(tile).render(g, (x+1)*zoomVector.x, (y+1)*zoomVector.y);
+	    double minY = Math.max(origin.getY()/zoomHeight, 0);
+	    double maxY = Math.min((origin.getY()+size.getHeight())/zoomHeight, gridHeight);
+	    for(int y=(int)minY; y<maxY; y++) {
+		for(int x=(int)minX; x<maxX;  x++) {
+		    Tile tile = getTile(x, y);
+		    if(tile != null) {
+			tile.render(g, x*zoomWidth+zoomWidth, y*zoomHeight+zoomHeight);
+		    }
 		}
 	    }
 	}
