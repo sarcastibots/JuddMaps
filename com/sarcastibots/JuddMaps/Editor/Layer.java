@@ -164,7 +164,8 @@ public class Layer {
 	    insertLocation = gridWidth;
 	    removeLocation = 0;
 	}
-	for ( int i = 0; i < offX; i++ ) {
+	int shiftMag = Math.abs(offX);
+	for ( int i = 0; i < shiftMag; i++ ) {
 	    grid.add( insertLocation, newColumn() );
 	    grid.remove(removeLocation);
 	}
@@ -185,7 +186,8 @@ public class Layer {
 	    insertLocation = gridHeight;
 	    removeLocation = 0;
 	}
-	for ( int i = 0; i < offY; i++ ) {
+	int shiftMag = Math.abs(offY);
+	for ( int i = 0; i < shiftMag; i++ ) {
 	    column.add(insertLocation, new Tile());
 	    column.remove(removeLocation);
 	}

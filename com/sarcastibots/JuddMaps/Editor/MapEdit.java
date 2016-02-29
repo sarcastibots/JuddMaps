@@ -11,12 +11,12 @@ import java.beans.*;
 
 /**
  * map editor. This class may be quite hacky. <p>
- * Map editor is curently able to do three-layer maps.
+ * Map editor is currently able to do arbitrary layer maps maps.
  * I intend to introduce some more interesting tiles to the set.
  */
 public class MapEdit implements ActionListener, ChangeListener, KeyListener
 {
-    boolean compactToolbars = true;
+    boolean compactToolbars = false;
     boolean borderedButtons = true;
 
     public static final int PAINT_NORMAL = 0;
@@ -44,6 +44,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 
     /** Layer combo */
     JComboBox<String>  layerCombo;
+    JButton	layerPropsBtn;
     
     /** Toolbar buttons, self-explanatory */
     JToolBar      outerToolBar;
@@ -55,7 +56,6 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
     
     JButton	  addLayerBtn;
     JButton	  removeLayerBtn;
-//    JToggleButton layerButtons[];
     JToggleButton hideBtn;
     JToggleButton gridBtn;
     JButton       shiftRightBtn;
@@ -108,8 +108,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 
 
 
-    public MapEdit()
-    {
+    public MapEdit() {
 	//gfx = new GraphicsBank();
 	zoomLevel = 1;
 	openFile = null;
@@ -330,14 +329,6 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	layerCombo.addActionListener(this);
 	addLayerBtn = makeBtn("+ Layer", "/icons/addLayer.png", "Add a layer");
 	removeLayerBtn = makeBtn("- Layer", "/icons/removeLayer.png", "Remove a layer");
-//	ButtonGroup layerGroup = new ButtonGroup();
-//	layerButtons = new JToggleButton[Map.LAYERS];
-//	layerButtons[2] = makeToggleBtn("Layer 3", "/icons/top.gif",    "Edit the top layer");
-//	layerButtons[1] = makeToggleBtn("Layer 2", "/icons/mid.gif",    "Edit the middle layer");
-//	layerButtons[0] = makeToggleBtn("Layer 1", "/icons/bottom.gif", "Edit the bottom layer");
-//	layerGroup.add(layerButtons[0]);
-//	layerGroup.add(layerButtons[1]);
-//	layerGroup.add(layerButtons[2]);
 
 	/* Visual buttons */
 	gridBtn     = makeToggleBtn("Grid",              "/icons/grid.gif",    "Show/Hide Grid");
@@ -394,9 +385,6 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	outerToolBar.add(layerCombo);
 	outerToolBar.add(addLayerBtn);
 	outerToolBar.add(removeLayerBtn);
-//	outerToolBar.add(layerButtons[2]);
-//	outerToolBar.add(layerButtons[1]);
-//	outerToolBar.add(layerButtons[0]);
 
 	outerToolBar.addSeparator();
 	outerToolBar.add(hideBtn);
@@ -432,7 +420,6 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	innerToolBar.addSeparator();
 
 	gridBtn.setSelected(true);
-//	layerButtons[0].setSelected(true);
     }
 
 
@@ -500,12 +487,6 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	    map.resize(map.getWidth(), map.getHeight(), map.getLayerCount() - 1);
 	    updateLayerComboItems();
 	    mapPanel.setMap(map);
-//	} else if (source == layerButtons[0]) {
-//	    mapPanel.setActiveLayer(0);
-//	} else if (source == layerButtons[1]) {
-//	    mapPanel.setActiveLayer(1);
-//	} else if (source == layerButtons[2]) {
-//	    mapPanel.setActiveLayer(2);
 	} else if (source == hideBtn) {
 	    mapPanel.setHideLayers(hideBtn.isSelected());
 	    mapPanel.repaint();
