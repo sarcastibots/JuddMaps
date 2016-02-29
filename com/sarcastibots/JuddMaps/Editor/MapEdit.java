@@ -688,7 +688,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 
 	if(scene.getTileset().isUnsaved()) {
 	    System.out.println("?? 2 " + (scene.getTileset() == gfx));
-	    PromptDialog.tell("Please save your tileset first.", "OK");
+	    PromptDialog.tell("Please save your tileset first.");
 	    return;
 	}
 	try {
@@ -696,7 +696,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	    openFile = file;
 	    mainFrame.validate();
 	} catch (Exception e) {
-	    PromptDialog.tell("Could not save: "+e, "OK");
+	    PromptDialog.tell("Could not save: "+e);
 	    e.printStackTrace();
 	}
     }
@@ -882,11 +882,11 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 		setGraphicsBank(g);
 	    }
 	} catch(FileNotFoundException e) {
-	    PromptDialog.tell("Selected file could not be found", "OK");
+	    PromptDialog.tell("Selected file could not be found");
 	    System.out.println(e);
 	    e.printStackTrace();
 	} catch(IOException e) {
-	    PromptDialog.tell("Could not read the file", "OK");
+	    PromptDialog.tell("Could not read the file");
 	    System.out.println(e);
 	    e.printStackTrace();
 	}
@@ -900,7 +900,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 		setGraphicsBank(gfx);
 	    }
 	} catch(IOException e) {
-	    PromptDialog.tell("Could not read the file", "OK");
+	    PromptDialog.tell("Could not read the file");
 	    System.out.println(e);
 	    e.printStackTrace();
 	}
