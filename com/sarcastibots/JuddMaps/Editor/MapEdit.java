@@ -327,6 +327,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	/* TODO this will break if map is initialized after tool bars. */ 
 	this.layerCombo = new JComboBox<String>( map.getLayerNames() );
 	layerCombo.addActionListener(this);
+	layerPropsBtn = makeBtn( "Layer Props", "/icons/layerProperties.png", "Open Layer Properties Dialog");
 	addLayerBtn = makeBtn("+ Layer", "/icons/addLayer.png", "Add a layer");
 	removeLayerBtn = makeBtn("- Layer", "/icons/removeLayer.png", "Remove a layer");
 
@@ -383,6 +384,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 
 	outerToolBar.addSeparator();
 	outerToolBar.add(layerCombo);
+	outerToolBar.add(layerPropsBtn);
 	outerToolBar.add(addLayerBtn);
 	outerToolBar.add(removeLayerBtn);
 
