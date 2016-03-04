@@ -5,10 +5,17 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+
+import com.sarcastibots.JuddMaps.Editor.Layer.LayerType;
 
 public class LayerPropertiesFrame 
 extends JFrame 
@@ -18,7 +25,7 @@ implements ActionListener {
     private static final long serialVersionUID = 7582572712770482342L;
     
     LayerPropertiesTableModel tableModel;
-    JTable propertiesTabel;
+    JTable propertiesTable;
     JButton closeBtn;
     Map map;
     
@@ -30,9 +37,11 @@ implements ActionListener {
     private void initComonents() {
 	this.setTitle("Map Layer Properties");
 	this.setLayout( new GridBagLayout() );
+	
 	addLayerPropertiesTable();
 	
 	addCloseBtn();
+	
 	pack();
     }
 
@@ -40,13 +49,28 @@ implements ActionListener {
 	// properties table columns name(string), visible(checkbox), type(combo), move up(button), move down(button
 	
 	tableModel = new LayerPropertiesTableModel();
-        propertiesTabel = new JTable();
-        propertiesTabel.setModel(tableModel);
-        propertiesTabel.getColumn("Move Up").setCellRenderer(new ButtonRenderer());
-        propertiesTabel.getColumn("Move Down").setCellRenderer(new ButtonRenderer());
+        propertiesTable = new JTable( tableModel );
+        
+        // set up column editors
+        TableColumn layerTypeColumn = propertiesTable.getColumnModel().getColumn(2);
+        JComboBox<LayerType> comboBox = new JComboBox<>(LayerType.values());
+        layerTypeColumn.setCellEditor(new DefaultCellEditor(comboBox));
+        
+        DefaultTableCellRenderer renderer =
+                new DefaultTableCellRenderer();
+        renderer.setToolTipText("Click for combo box");
+        layerTypeColumn.setCellRenderer(renderer);
+        
+        propertiesTable.getColumn("Move Up").setCellRenderer(new ButtonRenderer());
+        propertiesTable.getColumn("Move Up").setCellEditor(
+                new ButtonEditor(new JCheckBox()));
+        
+        propertiesTable.getColumn("Move Down").setCellRenderer(new ButtonRenderer());
+        propertiesTable.getColumn("Move Down").setCellEditor(
+                new ButtonEditor(new JCheckBox()));
         
         JScrollPane propsScrollPane = new JScrollPane();
-        propsScrollPane.setViewportView(propertiesTabel);
+        propsScrollPane.setViewportView(propertiesTable);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 	gbc.gridx = 0;
@@ -78,12 +102,14 @@ implements ActionListener {
 
     public void setMap ( Map m ) {
 	this.map = m;
-	updateTableModel();
+	updateLayers();
     }
 
-    private void updateTableModel() {
+    public void updateLayers() {
+	tableModel.clear();
 	for ( Layer l: map.layers ) {
 	    tableModel.addRow(l);
 	}
+	this.propertiesTable.revalidate();
     }
 }

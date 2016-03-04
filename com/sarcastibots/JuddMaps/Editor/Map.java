@@ -4,6 +4,9 @@ import java.awt.Graphics;
 import java.awt.*;
 
 import java.util.List;
+
+import com.sarcastibots.JuddMaps.Editor.Layer.LayerType;
+
 import java.util.*;
 
 
@@ -57,7 +60,7 @@ public class Map
 	this.layerHeight = height;
 	this.layerWidth = width;
 	layers = new ArrayList<>();
-	layers.add( new Layer(width, height, Layer.GROUND, "Ground"));
+	layers.add( new Layer(width, height, LayerType.GROUND, "Ground"));
 	this.addLayers(3);
 	changeListeners = new ArrayList<>();
     }
@@ -243,7 +246,7 @@ public class Map
 
     private void addLayers(int newLayers) {
 	for ( int i = layers.size(); i < newLayers; i++) {
-	    layers.add( new Layer( layerWidth, layerHeight, Layer.SPRITE, "Sprite " + String.valueOf(i) ));
+	    layers.add( new Layer( layerWidth, layerHeight, LayerType.SPRITE, "Sprite " + String.valueOf(i) ));
 	}
     }
 

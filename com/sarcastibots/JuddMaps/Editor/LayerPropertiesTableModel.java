@@ -62,4 +62,8 @@ public class LayerPropertiesTableModel extends AbstractTableModel {
 	layerData[4] = "Down";
 	this.data.add(layerData);
     }
+
+    public void clear() {
+	this.data.clear();
+    }
 }

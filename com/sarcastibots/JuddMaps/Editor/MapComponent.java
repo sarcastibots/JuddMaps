@@ -69,6 +69,7 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 
 	setPreferredSize(new Dimension(tileWidth*width, tileHeight*height));
 	revalidate();
+	//TODO not a fan of flushing redo//undo on size change but it might be unavoidable with current implementation
 	undoStack.clear();
 	redoStack.clear();
 	stateChanged = true;

@@ -8,8 +8,12 @@ import java.util.List;
 
 public class Layer {
 
-    public static final int GROUND = 0;
-    public static final int SPRITE = 1;
+    public enum LayerType {
+	GROUND,
+	SPRITE
+    }
+//    public static final int GROUND = 0;
+//    public static final int SPRITE = 1;
 
     String name;
     /** TODO instead of creating a pile of Tile objects we'll use a flyweight class so 
@@ -20,10 +24,10 @@ public class Layer {
     List<List<Tile>> grid;
     private int gridWidth, gridHeight;
 
-    private int layerType;
+    private LayerType layerType;
     private boolean visible;
 
-    public Layer(int width, int height, int type, String name) {
+    public Layer(int width, int height, LayerType type, String name) {
 	this.gridWidth = width;
 	this.gridHeight = height;
 	this.name = name;
@@ -193,11 +197,11 @@ public class Layer {
 	}
     }
 
-    public int getLayerType() {
+    public LayerType getLayerType() {
 	return layerType;
     }
 
-    public void setLayerType(int layerType) {
+    public void setLayerType(LayerType layerType) {
 	this.layerType = layerType;
     }
     

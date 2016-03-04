@@ -490,10 +490,12 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
     	} else if (source == addLayerBtn ) {
 	    map.resize(map.getWidth(), map.getHeight(), map.getLayerCount() + 1);
 	    updateLayerComboItems();
+	    layerPropertiesFrame.updateLayers();
 	    mapPanel.setMap(map);
 	} else if (source == removeLayerBtn ) {
 	    map.resize(map.getWidth(), map.getHeight(), map.getLayerCount() - 1);
 	    updateLayerComboItems();
+	    layerPropertiesFrame.updateLayers();
 	    mapPanel.setMap(map);
 	} else if (source == hideBtn) {
 	    mapPanel.setHideLayers(hideBtn.isSelected());
