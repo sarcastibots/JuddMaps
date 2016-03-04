@@ -123,14 +123,6 @@ public class Layer {
 	gridHeight = newHeight;
     }
 
-    public int getLayerType() {
-	return layerType;
-    }
-
-    public void setLayerType(int layerType) {
-	this.layerType = layerType;
-    }
-
     public void setTile(int x, int y, Tile t) {
 	grid.get(x).set(y, t);
     }
@@ -201,4 +193,27 @@ public class Layer {
 	}
     }
 
+    public int getLayerType() {
+	return layerType;
+    }
+
+    public void setLayerType(int layerType) {
+	this.layerType = layerType;
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 }

@@ -41,7 +41,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
     Scene        scene;         // Scene in which the map is found
     GraphicsBank gfx;           // Graphics bank used by this scene. All the tiles.
 
-
+    LayerPropertiesFrame layerPropertiesFrame;
     /** Layer combo */
     JComboBox<String>  layerCombo;
     JButton	layerPropsBtn;
@@ -129,6 +129,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	tileChooser = new TileChooser(gfx, mainFrame);
 	chooser = new JFileChooser("scenes");
 	tschooser = new JFileChooser("gfx");
+	layerPropertiesFrame = new LayerPropertiesFrame();
 
 	/* outer-most containers actually reserved for docking the toolbars.
 	 * so "cp" is actually not the contentpane of the JPanel, but let's
@@ -481,7 +482,12 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	    mapPanel.repaint();
 	} else if (source == layerCombo) { //TODO listen for text change events so things can be renamed
 	    mapPanel.setActiveLayer(layerCombo.getSelectedIndex());
-	} else if (source == addLayerBtn ) {
+	} else if (source == layerPropsBtn ) {
+	    if ( !layerPropertiesFrame.isVisible() ) {
+		layerPropertiesFrame.setMap( this.map );
+		layerPropertiesFrame.setVisible(true);
+	    }
+    	} else if (source == addLayerBtn ) {
 	    map.resize(map.getWidth(), map.getHeight(), map.getLayerCount() + 1);
 	    updateLayerComboItems();
 	    mapPanel.setMap(map);
@@ -713,6 +719,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	    System.out.println("Scene caused tileset "+gfx.getFile()+" to be loaded");
 
 	    mapPanel.setMap(map);
+	    layerPropertiesFrame.setMap(map);
 
 	    setIgnoreEffectChanges(true);
 	    r.setValue((int)(scene.effect_rScale * 100));
