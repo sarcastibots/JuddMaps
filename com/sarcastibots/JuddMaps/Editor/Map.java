@@ -358,5 +358,28 @@ public class Map
     }
 
 
+    public void moveLayer(int oldLayerPosition, int newLayerPosition) {
+	Layer layer = layers.get(oldLayerPosition);
+	if ( newLayerPosition > oldLayerPosition ) {
+	    layers.add(newLayerPosition + 1, layer);
+	    layers.remove(oldLayerPosition);
+	} else {
+	    layers.add(newLayerPosition, layer);
+	    layers.remove(oldLayerPosition + 1);
+	}
+    }
+
+
+    public void setHideLayers(int layer) {
+	for ( int i = 0; i < layers.size(); i++ ) {
+	    if ( i == layer ) {
+		layers.get(i).setVisible(true);
+	    } else {
+		layers.get(i).setVisible(false);
+	    }
+	}
+    }
+
+
 }
 

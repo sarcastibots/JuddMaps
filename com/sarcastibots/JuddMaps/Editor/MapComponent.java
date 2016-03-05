@@ -21,7 +21,6 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
     private int tileHeight = 0;
 
     private int activeLayer = 0;
-    boolean hideLayers = false;
     boolean showGrid = true;
     boolean stateChanged = false;
 
@@ -57,7 +56,7 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
     public void setViewport(JViewport vp) {
 	this.viewport = vp;
     }
-    
+
     synchronized public void setMap(Map m) {
 	this.map = m;
 
@@ -95,12 +94,8 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 	//as the tiles are drawn with the origin at the
 	//bottom right, but the component's origin is the top left,
 	//we need to set the offset so we can see the tiles
-	if(hideLayers) {
-	    map.render(g, viewport.getViewPosition(), viewport.getSize(), activeLayer);
-	}
-	else {
-	    map.render(g, viewport.getViewPosition(), viewport.getSize());
-	}
+	map.render(g, viewport.getViewPosition(), viewport.getSize());
+
 
 	//map.render(g, -tileWidth, -tileHeight);
 	if(showGrid)
@@ -229,9 +224,9 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 	}
 	switch(e.getButton()) {
 	case MouseEvent.BUTTON1: btn1Pressed = true;
-	    mapClicked(e.getX(), e.getY());
-	    this.repaint();
-	    break;
+	mapClicked(e.getX(), e.getY());
+	this.repaint();
+	break;
 	/*
 			default:
 				btn2Pressed = true;
@@ -251,7 +246,7 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 	    break;
 	}
     }
-    
+
     public void mouseReleased(MouseEvent e) {
 	switch(e.getButton()) {
 	case MouseEvent.BUTTON1:
@@ -275,7 +270,7 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
     }
     public void mouseEntered(MouseEvent e) {
     }
-    
+
     public void mouseDragged(MouseEvent e) {
 	if(btn1Pressed && mapEdit.getPaintMode() != MapEdit.PAINT_FILL) {
 	    mapClicked(e.getX(), e.getY());
@@ -292,14 +287,14 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 	    dragged = true;
 	}
     }
-    
+
     public void mouseExited(MouseEvent e) {
 
     }
     public void mouseClicked(MouseEvent e) {
 
     }
-    
+
     public void mouseMoved(MouseEvent e) {
 
     }
@@ -307,11 +302,6 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
     public void setGrid(boolean grid) {
 	showGrid = grid;
     }
-
-    public void setHideLayers(boolean hl) {
-	hideLayers = hl;
-    }
-
 
     public void mapChanging(boolean major) {
 	if(!major) {

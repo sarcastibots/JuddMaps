@@ -56,7 +56,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
     
     JButton	  addLayerBtn;
     JButton	  removeLayerBtn;
-    JToggleButton hideBtn;
+    JButton 	  hideBtn;
     JToggleButton gridBtn;
     JButton       shiftRightBtn;
     JButton       shiftLeftBtn;
@@ -129,7 +129,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	tileChooser = new TileChooser(gfx, mainFrame);
 	chooser = new JFileChooser("scenes");
 	tschooser = new JFileChooser("gfx");
-	layerPropertiesFrame = new LayerPropertiesFrame();
+	layerPropertiesFrame = new LayerPropertiesFrame( this );
 
 	/* outer-most containers actually reserved for docking the toolbars.
 	 * so "cp" is actually not the contentpane of the JPanel, but let's
@@ -334,7 +334,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 
 	/* Visual buttons */
 	gridBtn     = makeToggleBtn("Grid",              "/icons/grid.gif",    "Show/Hide Grid");
-	hideBtn     = makeToggleBtn("Hide other layers", "/icons/hideoth.gif", "Hide other layers");
+	hideBtn     = makeBtn("Hide other layers", "/icons/hideoth.gif", "Hide other layers");
 	/*
 		palletteBtn = makeToggleBtn("Colours", "icons/pallette.png",
 			"Adjust Hue, Saturation, and RGB channels of the tileset");
@@ -498,7 +498,8 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	    layerPropertiesFrame.updateLayers();
 	    mapPanel.setMap(map);
 	} else if (source == hideBtn) {
-	    mapPanel.setHideLayers(hideBtn.isSelected());
+	    map.setHideLayers(layerCombo.getSelectedIndex());
+	    this.layerPropertiesFrame.updateLayers();
 	    mapPanel.repaint();
 	} else if (source == gridBtn) {
 	    mapPanel.setGrid(gridBtn.isSelected());
@@ -766,7 +767,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
     }
 
 
-    private void updateLayerComboItems() {
+    public void updateLayerComboItems() {
 	DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>( map.getLayerNames() );
 	this.layerCombo.setModel(model);
     }

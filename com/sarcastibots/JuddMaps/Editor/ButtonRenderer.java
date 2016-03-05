@@ -1,5 +1,7 @@
 package com.sarcastibots.JuddMaps.Editor;
 
+//Courtesy of http://www.crionics.com/products/opensource/faq/swing_ex/SwingExamples.html
+
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,7 +9,6 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
@@ -32,10 +33,6 @@ class ButtonRenderer extends JButton implements TableCellRenderer {
 	return this;
     }
 }
-
-/**
- * @version 1.0 11/09/98
- */
 
 @SuppressWarnings("serial")
 class ButtonEditor extends DefaultCellEditor {
@@ -75,7 +72,7 @@ class ButtonEditor extends DefaultCellEditor {
 	if (isPushed) {
 	    // 
 	    // 
-	    JOptionPane.showMessageDialog(button, label + ": Ouch!");
+	    //JOptionPane.showMessageDialog(button, label + ": Ouch!");
 	    // System.out.println(label + ": Ouch!");
 	}
 	isPushed = false;

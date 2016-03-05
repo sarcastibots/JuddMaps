@@ -51,6 +51,7 @@ public class LayerPropertiesTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object newValue, int row, int col) {
 	data.get(row)[col] = newValue;
+	super.fireTableCellUpdated(row, col);
     }
 
     public void addRow( Layer layer ) {

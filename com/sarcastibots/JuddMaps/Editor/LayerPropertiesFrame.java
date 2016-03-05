@@ -12,6 +12,8 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
@@ -19,7 +21,7 @@ import com.sarcastibots.JuddMaps.Editor.Layer.LayerType;
 
 public class LayerPropertiesFrame 
 extends JFrame 
-implements ActionListener {
+implements ActionListener, TableModelListener {
 
     /** generated serial id */
     private static final long serialVersionUID = 7582572712770482342L;
@@ -28,9 +30,11 @@ implements ActionListener {
     JTable propertiesTable;
     JButton closeBtn;
     Map map;
+    MapEdit mapEdit;
     
-    public LayerPropertiesFrame() {
+    public LayerPropertiesFrame( MapEdit edit) {
 	this.setDefaultCloseOperation(HIDE_ON_CLOSE);
+	this.mapEdit = edit;
 	initComonents();
     }
 
@@ -49,6 +53,7 @@ implements ActionListener {
 	// properties table columns name(string), visible(checkbox), type(combo), move up(button), move down(button
 	
 	tableModel = new LayerPropertiesTableModel();
+	tableModel.addTableModelListener(this);
         propertiesTable = new JTable( tableModel );
         
         // set up column editors
@@ -97,6 +102,8 @@ implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 	if ( e.getSource() == closeBtn) {
 	    this.setVisible(false);
+	} else if ( e.getSource() == propertiesTable ) {
+	    
 	}
     }
 
@@ -107,9 +114,42 @@ implements ActionListener {
 
     public void updateLayers() {
 	tableModel.clear();
-	for ( Layer l: map.layers ) {
-	    tableModel.addRow(l);
+	// to avoid ordering confusion it's best to start at the end and work our way down
+	// this way lower indexed layers are displayed graphically lower on the table.
+	for ( int i = map.layers.size() - 1; i >= 0; i-- ) {
+	    tableModel.addRow( map.layers.get(i) );
 	}
+	
 	this.propertiesTable.revalidate();
+	this.propertiesTable.repaint();
+    }
+
+    @Override
+    public void tableChanged(TableModelEvent e) {
+	int row = e.getFirstRow();
+        int column = e.getColumn();
+        int mapLayer = map.getLayerCount() - row - 1; //we reversed things earlier so now all the indices are backwards fun
+        Object data = tableModel.getValueAt(row, column);
+        switch ( column ) {
+        case 0: 
+            map.layers.get(mapLayer).setName((String)data);
+            break;
+        case 1:
+            map.layers.get(mapLayer).setVisible((boolean)data);
+            break;
+        case 2:
+            map.layers.get(mapLayer).setLayerType((LayerType)data);
+            break;
+        case 3:
+            map.moveLayer(mapLayer, mapLayer+1);
+            this.updateLayers();
+            mapEdit.updateLayerComboItems();
+            break;
+        case 4:
+            map.moveLayer(mapLayer, mapLayer-1);
+            this.updateLayers();
+            mapEdit.updateLayerComboItems();
+            break;
+        }
     }
 }
