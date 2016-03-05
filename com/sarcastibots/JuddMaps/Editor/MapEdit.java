@@ -130,6 +130,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	chooser = new JFileChooser("scenes");
 	tschooser = new JFileChooser("gfx");
 	layerPropertiesFrame = new LayerPropertiesFrame( this );
+	layerPropertiesFrame.setMap(map);
 
 	/* outer-most containers actually reserved for docking the toolbars.
 	 * so "cp" is actually not the contentpane of the JPanel, but let's
