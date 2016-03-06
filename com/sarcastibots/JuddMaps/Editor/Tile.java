@@ -25,7 +25,7 @@ public class Tile
   int zoomWidth, zoomHeight;
   
   String name = null;
-  int number = -1;
+  int number = 0;
   String type = null;
   String path = null;
   String info = null;

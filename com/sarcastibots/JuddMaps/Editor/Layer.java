@@ -209,8 +209,9 @@ public class Layer {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String usName) {
+	String sName = usName.replace(" ", "_");
+        this.name = sName;
     }
 
     public boolean isVisible() {

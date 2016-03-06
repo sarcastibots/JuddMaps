@@ -724,6 +724,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 
 	    mapPanel.setMap(map);
 	    layerPropertiesFrame.setMap(map);
+	    updateLayerComboItems();
 
 	    setIgnoreEffectChanges(true);
 	    r.setValue((int)(scene.effect_rScale * 100));

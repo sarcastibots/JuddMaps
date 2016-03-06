@@ -56,12 +56,12 @@ public class Map
      * Maps are constructed with a width and height, originally
      * having all null tiles.
      */
-    public Map(int width, int height) {
+    public Map(int width, int height, int layerCnt) {
 	this.layerHeight = height;
 	this.layerWidth = width;
 	layers = new ArrayList<>();
 	layers.add( new Layer(width, height, LayerType.GROUND, "Ground"));
-	this.addLayers(3);
+	this.addLayers(layerCnt);
 	changeListeners = new ArrayList<>();
     }
 
@@ -72,8 +72,8 @@ public class Map
      *
      * You can also specify the base tile width and height.
      */
-    public Map(int width, int height, int tileWidth, int tileHeight) {
-	this(width, height);
+    public Map(int width, int height, int layerCnt, int tileWidth, int tileHeight) {
+	this(width, height, layerCnt);
 	this.tileWidth = tileWidth;
 	this.tileHeight = tileHeight;
 	zoomWidth = tileWidth;
@@ -227,6 +227,7 @@ public class Map
 	
 	// idiot check
 	int newLayers = Math.max(1, requestedLayers);
+	
 	if ( newLayers > layers.size() ) {
 	    addLayers( newLayers );
 	} else if ( newLayers < layers.size() ) {
@@ -246,7 +247,7 @@ public class Map
 
     private void addLayers(int newLayers) {
 	for ( int i = layers.size(); i < newLayers; i++) {
-	    layers.add( new Layer( layerWidth, layerHeight, LayerType.SPRITE, "Sprite " + String.valueOf(i) ));
+	    layers.add( new Layer( layerWidth, layerHeight, LayerType.SPRITE, "Sprite_" + String.valueOf(i) ));
 	}
     }
 
@@ -378,6 +379,11 @@ public class Map
 		layers.get(i).setVisible(false);
 	    }
 	}
+    }
+
+
+    public Layer getLayer(int z) {
+	return this.layers.get(z);
     }
 
 
