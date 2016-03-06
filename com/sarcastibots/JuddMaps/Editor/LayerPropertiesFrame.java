@@ -133,6 +133,7 @@ implements ActionListener, TableModelListener {
         switch ( column ) {
         case 0: 
             map.layers.get(mapLayer).setName((String)data);
+            mapEdit.updateLayerComboItems();
             break;
         case 1:
             map.layers.get(mapLayer).setVisible((boolean)data);

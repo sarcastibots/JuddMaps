@@ -757,13 +757,14 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
       System.err.println("Could not load default graphics bank, using blank one.");
       gfx = new GraphicsBank();
     } */
-	scene = new Scene(new Map(10,10), new ArrayList<Sprite>(), gfx);
+	scene = new Scene(new Map(10,10, 3), new ArrayList<Sprite>(), gfx);
 	zoomLevel = 1;
 	map = scene.getMap();
 	setGraphicsBank(scene.getTileset());
 	mapPanel.setMap(map);
 	mapPanel.repaint();
 	updateLayerComboItems();
+	layerPropertiesFrame.setMap(map);
 	mainFrame.validate();
     }
 
