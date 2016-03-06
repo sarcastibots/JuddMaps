@@ -11,13 +11,12 @@ import java.beans.*;
 
 /**
  * map editor. This class may be quite hacky. <p>
- * Map editor is curently able to do one layer maps.
- * I intend to extend this to three-layer maps, and
- * to introduce some more interesting tiles to the set.
+ * Map editor is currently able to do arbitrary layer maps maps.
+ * I intend to introduce some more interesting tiles to the set.
  */
 public class MapEdit implements ActionListener, ChangeListener, KeyListener
 {
-    boolean compactToolbars = true;
+    boolean compactToolbars = false;
     boolean borderedButtons = true;
 
     public static final int PAINT_NORMAL = 0;
@@ -42,16 +41,22 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
     Scene        scene;         // Scene in which the map is found
     GraphicsBank gfx;           // Graphics bank used by this scene. All the tiles.
 
-
-    /* Toolbar buttons, self-explanatory */
+    LayerPropertiesFrame layerPropertiesFrame;
+    /** Layer combo */
+    JComboBox<String>  layerCombo;
+    JButton	layerPropsBtn;
+    
+    /** Toolbar buttons, self-explanatory */
     JToolBar      outerToolBar;
     JToolBar      innerToolBar;
     JButton       newBtn;
     JButton       openBtn;
     JButton       saveBtn;
     JButton       clearBtn;
-    JToggleButton layerButtons[];
-    JToggleButton hideBtn;
+    
+    JButton	  addLayerBtn;
+    JButton	  removeLayerBtn;
+    JButton 	  hideBtn;
     JToggleButton gridBtn;
     JButton       shiftRightBtn;
     JButton       shiftLeftBtn;
@@ -103,8 +108,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 
 
 
-    public MapEdit()
-    {
+    public MapEdit() {
 	//gfx = new GraphicsBank();
 	zoomLevel = 1;
 	openFile = null;
@@ -125,6 +129,8 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	tileChooser = new TileChooser(gfx, mainFrame);
 	chooser = new JFileChooser("scenes");
 	tschooser = new JFileChooser("gfx");
+	layerPropertiesFrame = new LayerPropertiesFrame( this );
+	layerPropertiesFrame.setMap(map);
 
 	/* outer-most containers actually reserved for docking the toolbars.
 	 * so "cp" is actually not the contentpane of the JPanel, but let's
@@ -320,19 +326,16 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	newBtn   = makeBtn("New",     "/icons/new.gif",   "New map");
 	clearBtn = makeBtn("Clear",   "/icons/clear.gif", "Reset map (Delete all tiles)");
 
-	/* TODO paraeterize implement better names Layer buttons. */ 
-	ButtonGroup layerGroup = new ButtonGroup();
-	layerButtons = new JToggleButton[Map.LAYERS];
-	layerButtons[2] = makeToggleBtn("Layer 3", "/icons/top.gif",    "Edit the top layer");
-	layerButtons[1] = makeToggleBtn("Layer 2", "/icons/mid.gif",    "Edit the middle layer");
-	layerButtons[0] = makeToggleBtn("Layer 1", "/icons/bottom.gif", "Edit the bottom layer");
-	layerGroup.add(layerButtons[0]);
-	layerGroup.add(layerButtons[1]);
-	layerGroup.add(layerButtons[2]);
+	/* TODO this will break if map is initialized after tool bars. */ 
+	this.layerCombo = new JComboBox<String>( map.getLayerNames() );
+	layerCombo.addActionListener(this);
+	layerPropsBtn = makeBtn( "Layer Props", "/icons/layerProperties.png", "Open Layer Properties Dialog");
+	addLayerBtn = makeBtn("+ Layer", "/icons/addLayer.png", "Add a layer");
+	removeLayerBtn = makeBtn("- Layer", "/icons/removeLayer.png", "Remove a layer");
 
 	/* Visual buttons */
 	gridBtn     = makeToggleBtn("Grid",              "/icons/grid.gif",    "Show/Hide Grid");
-	hideBtn     = makeToggleBtn("Hide other layers", "/icons/hideoth.gif", "Hide other layers");
+	hideBtn     = makeBtn("Hide other layers", "/icons/hideoth.gif", "Hide other layers");
 	/*
 		palletteBtn = makeToggleBtn("Colours", "icons/pallette.png",
 			"Adjust Hue, Saturation, and RGB channels of the tileset");
@@ -382,9 +385,10 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	outerToolBar.add(fillBtn);
 
 	outerToolBar.addSeparator();
-	outerToolBar.add(layerButtons[2]);
-	outerToolBar.add(layerButtons[1]);
-	outerToolBar.add(layerButtons[0]);
+	outerToolBar.add(layerCombo);
+	outerToolBar.add(layerPropsBtn);
+	outerToolBar.add(addLayerBtn);
+	outerToolBar.add(removeLayerBtn);
 
 	outerToolBar.addSeparator();
 	outerToolBar.add(hideBtn);
@@ -420,7 +424,6 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	innerToolBar.addSeparator();
 
 	gridBtn.setSelected(true);
-	layerButtons[0].setSelected(true);
     }
 
 
@@ -478,14 +481,26 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	} else if (source == clearBtn) {
 	    map.clear();
 	    mapPanel.repaint();
-	} else if (source == layerButtons[0]) {
-	    mapPanel.setActiveLayer(0);
-	} else if (source == layerButtons[1]) {
-	    mapPanel.setActiveLayer(1);
-	} else if (source == layerButtons[2]) {
-	    mapPanel.setActiveLayer(2);
+	} else if (source == layerCombo) { //TODO listen for text change events so things can be renamed
+	    mapPanel.setActiveLayer(layerCombo.getSelectedIndex());
+	} else if (source == layerPropsBtn ) {
+	    if ( !layerPropertiesFrame.isVisible() ) {
+		layerPropertiesFrame.setMap( this.map );
+		layerPropertiesFrame.setVisible(true);
+	    }
+    	} else if (source == addLayerBtn ) {
+	    map.resize(map.getWidth(), map.getHeight(), map.getLayerCount() + 1);
+	    updateLayerComboItems();
+	    layerPropertiesFrame.updateLayers();
+	    mapPanel.setMap(map);
+	} else if (source == removeLayerBtn ) {
+	    map.resize(map.getWidth(), map.getHeight(), map.getLayerCount() - 1);
+	    updateLayerComboItems();
+	    layerPropertiesFrame.updateLayers();
+	    mapPanel.setMap(map);
 	} else if (source == hideBtn) {
-	    mapPanel.setHideLayers(hideBtn.isSelected());
+	    map.setHideLayers(layerCombo.getSelectedIndex());
+	    this.layerPropertiesFrame.updateLayers();
 	    mapPanel.repaint();
 	} else if (source == gridBtn) {
 	    mapPanel.setGrid(gridBtn.isSelected());
@@ -652,8 +667,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	return tileChooser.getSelectedTile();
     }
 
-    private void setGraphicsBank(GraphicsBank gfx)
-    {
+    private void setGraphicsBank(GraphicsBank gfx) {
 	this.gfx = gfx;
 	scene.setTileset(gfx);
 	chooserPanel.removeAll();
@@ -684,7 +698,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 
 	if(scene.getTileset().isUnsaved()) {
 	    System.out.println("?? 2 " + (scene.getTileset() == gfx));
-	    PromptDialog.tell("Please save your tileset first.", "OK");
+	    PromptDialog.tell("Please save your tileset first.");
 	    return;
 	}
 	try {
@@ -692,7 +706,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	    openFile = file;
 	    mainFrame.validate();
 	} catch (Exception e) {
-	    PromptDialog.tell("Could not save: "+e, "OK");
+	    PromptDialog.tell("Could not save: "+e);
 	    e.printStackTrace();
 	}
     }
@@ -700,10 +714,8 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
     /**
      * Opens the map file.
      **/
-    public void openFile(File file)
-    {
-	try
-	{
+    public void openFile(File file) {
+	try {
 	    zoomLevel = 1;
 	    scene = Scene.loadScene(file);
 	    map = scene.getMap();
@@ -711,6 +723,8 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	    System.out.println("Scene caused tileset "+gfx.getFile()+" to be loaded");
 
 	    mapPanel.setMap(map);
+	    layerPropertiesFrame.setMap(map);
+	    updateLayerComboItems();
 
 	    setIgnoreEffectChanges(true);
 	    r.setValue((int)(scene.effect_rScale * 100));
@@ -725,8 +739,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	    mapPanel.validate();
 	    mainFrame.repaint();
 	}
-	catch(IOException e)
-	{
+	catch(IOException e) {
 	    System.out.println("Invalid Map File. " + e);
 	}
 
@@ -736,8 +749,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
      * creates a new scene with a new map, 10 by 10 null tiles,
      * and an empty list of sprites.
      **/
-    public void newFile()
-    {
+    public void newFile() {
 	/*
     GraphicsBank gfx = new GraphicsBank();
     try {
@@ -746,13 +758,21 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
       System.err.println("Could not load default graphics bank, using blank one.");
       gfx = new GraphicsBank();
     } */
-	scene = new Scene(new Map(10,10), new ArrayList<Sprite>(), gfx);
+	scene = new Scene(new Map(10,10, 3), new ArrayList<Sprite>(), gfx);
 	zoomLevel = 1;
 	map = scene.getMap();
 	setGraphicsBank(scene.getTileset());
 	mapPanel.setMap(map);
 	mapPanel.repaint();
+	updateLayerComboItems();
+	layerPropertiesFrame.setMap(map);
 	mainFrame.validate();
+    }
+
+
+    public void updateLayerComboItems() {
+	DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>( map.getLayerNames() );
+	this.layerCombo.setModel(model);
     }
 
 
@@ -875,11 +895,11 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 		setGraphicsBank(g);
 	    }
 	} catch(FileNotFoundException e) {
-	    PromptDialog.tell("Selected file could not be found", "OK");
+	    PromptDialog.tell("Selected file could not be found");
 	    System.out.println(e);
 	    e.printStackTrace();
 	} catch(IOException e) {
-	    PromptDialog.tell("Could not read the file", "OK");
+	    PromptDialog.tell("Could not read the file");
 	    System.out.println(e);
 	    e.printStackTrace();
 	}
@@ -893,7 +913,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 		setGraphicsBank(gfx);
 	    }
 	} catch(IOException e) {
-	    PromptDialog.tell("Could not read the file", "OK");
+	    PromptDialog.tell("Could not read the file");
 	    System.out.println(e);
 	    e.printStackTrace();
 	}
