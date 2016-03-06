@@ -1,4 +1,7 @@
 package com.sarcastibots.JuddMaps.Editor;
+
+import com.sarcastibots.JuddMaps.Map.Sprite;
+
 /**
  *TODOL Fix this class properly.
  */

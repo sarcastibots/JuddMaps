@@ -1,5 +1,7 @@
-package com.sarcastibots.JuddMaps.Editor;
+package com.sarcastibots.JuddMaps.Map;
 import java.awt.Graphics;
+
+import com.sarcastibots.JuddMaps.Editor.Camera;
 
 /**
  * all types of sprites extend this interface. This is

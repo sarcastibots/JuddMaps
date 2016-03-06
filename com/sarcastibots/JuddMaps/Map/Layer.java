@@ -1,4 +1,4 @@
-package com.sarcastibots.JuddMaps.Editor;
+package com.sarcastibots.JuddMaps.Map;
 
 import java.awt.Dimension;
 import java.awt.Graphics;

@@ -1,9 +1,11 @@
-package com.sarcastibots.JuddMaps.Editor;
+package com.sarcastibots.JuddMaps.Map;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-import com.sarcastibots.JuddMaps.Editor.Layer.LayerType;
+import com.sarcastibots.JuddMaps.Editor.Camera;
+import com.sarcastibots.JuddMaps.Editor.RelativePath;
+import com.sarcastibots.JuddMaps.Map.Layer.LayerType;
 
 import java.io.*;
 
@@ -63,7 +65,7 @@ public class Scene
     /**
      * loads a scene from the given URL. takes tiles from the given GraphicsBank.
      */
-    static Scene loadScene(File f) throws IOException {
+    public static Scene loadScene(File f) throws IOException {
 	boolean hasColourEffect = false;
 	float r = 1;
 	float g = 1;
@@ -136,6 +138,46 @@ public class Scene
 
     }
 
+
+    public float getEffect_rScale() {
+        return effect_rScale;
+    }
+
+    public void setEffect_rScale(float effect_rScale) {
+        this.effect_rScale = effect_rScale;
+    }
+
+    public float getEffect_gScale() {
+        return effect_gScale;
+    }
+
+    public void setEffect_gScale(float effect_gScale) {
+        this.effect_gScale = effect_gScale;
+    }
+
+    public float getEffect_bScale() {
+        return effect_bScale;
+    }
+
+    public void setEffect_bScale(float effect_bScale) {
+        this.effect_bScale = effect_bScale;
+    }
+
+    public float getEffect_hue() {
+        return effect_hue;
+    }
+
+    public void setEffect_hue(float effect_hue) {
+        this.effect_hue = effect_hue;
+    }
+
+    public float getEffect_sat() {
+        return effect_sat;
+    }
+
+    public void setEffect_sat(float effect_sat) {
+        this.effect_sat = effect_sat;
+    }
 
     public static Scene loadScene(String filename) throws IOException {
 	Scene scene = loadScene(new File(filename));

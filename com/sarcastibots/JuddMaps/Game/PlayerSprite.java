@@ -2,7 +2,7 @@ package com.sarcastibots.JuddMaps.Game;
 import java.awt.*;
 
 import com.sarcastibots.JuddMaps.Editor.Camera;
-import com.sarcastibots.JuddMaps.Editor.Sprite;
+import com.sarcastibots.JuddMaps.Map.Sprite;
 
 /**
  * all types of sprites extend this interface. This is

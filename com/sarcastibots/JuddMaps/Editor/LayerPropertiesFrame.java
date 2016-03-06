@@ -17,7 +17,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import com.sarcastibots.JuddMaps.Editor.Layer.LayerType;
+import com.sarcastibots.JuddMaps.Map.Map;
+import com.sarcastibots.JuddMaps.Map.Layer.LayerType;
 
 public class LayerPropertiesFrame 
 extends JFrame 
@@ -116,8 +117,8 @@ implements ActionListener, TableModelListener {
 	tableModel.clear();
 	// to avoid ordering confusion it's best to start at the end and work our way down
 	// this way lower indexed layers are displayed graphically lower on the table.
-	for ( int i = map.layers.size() - 1; i >= 0; i-- ) {
-	    tableModel.addRow( map.layers.get(i) );
+	for ( int i = map.getLayerCount() - 1; i >= 0; i-- ) {
+	    tableModel.addRow( map.getLayer(i) );
 	}
 	
 	this.propertiesTable.revalidate();
@@ -132,14 +133,14 @@ implements ActionListener, TableModelListener {
         Object data = tableModel.getValueAt(row, column);
         switch ( column ) {
         case 0: 
-            map.layers.get(mapLayer).setName((String)data);
+            map.getLayer(mapLayer).setName((String)data);
             mapEdit.updateLayerComboItems();
             break;
         case 1:
-            map.layers.get(mapLayer).setVisible((boolean)data);
+            map.getLayer(mapLayer).setVisible((boolean)data);
             break;
         case 2:
-            map.layers.get(mapLayer).setLayerType((LayerType)data);
+            map.getLayer(mapLayer).setLayerType((LayerType)data);
             break;
         case 3:
             map.moveLayer(mapLayer, mapLayer+1);

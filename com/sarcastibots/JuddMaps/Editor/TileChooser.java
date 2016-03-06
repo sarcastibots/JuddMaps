@@ -4,6 +4,10 @@ import java.awt.image.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
+import com.sarcastibots.JuddMaps.Map.GraphicsBank;
+import com.sarcastibots.JuddMaps.Map.GraphicsBankChangeListener;
+import com.sarcastibots.JuddMaps.Map.Tile;
+
 import java.util.*;
 import java.util.List;
 import java.awt.event.*;
@@ -239,10 +243,10 @@ implements ActionListener, GraphicsBankChangeListener {
     public void actionPerformed(ActionEvent e)
     {
 	if(e.getSource() == applyBtn && propertyTile != null) {
-	    propertyTile.name = tileName.getText();
-	    propertyTile.type = tileType.getText();
-	    propertyTile.number = ((Integer)tileNumber.getValue()).intValue();
-	    propertyTile.info = userText.getText();
+	    propertyTile.setName( tileName.getText());
+	    propertyTile.setType(tileType.getText());
+	    propertyTile.setNumber(((Integer)tileNumber.getValue()).intValue());
+	    propertyTile.setInfo(userText.getText());
 	    propertiesDialog.dispose();
 	    propertyTile = null;
 	} else if(e.getSource() == cancelBtn) {

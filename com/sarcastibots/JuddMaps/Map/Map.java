@@ -1,11 +1,12 @@
-package com.sarcastibots.JuddMaps.Editor;
+package com.sarcastibots.JuddMaps.Map;
 
 import java.awt.Graphics;
 import java.awt.*;
 
 import java.util.List;
 
-import com.sarcastibots.JuddMaps.Editor.Layer.LayerType;
+import com.sarcastibots.JuddMaps.Editor.Camera;
+import com.sarcastibots.JuddMaps.Map.Layer.LayerType;
 
 import java.util.*;
 
@@ -96,7 +97,7 @@ public class Map
 	//tiles[x][y][z] = t;
     }
 
-    void setZoom(float z) {
+    public void setZoom(float z) {
 	zoomWidth  = (int)(tileWidth * z);
 	zoomHeight = (int)(tileHeight * z);
 
@@ -204,7 +205,7 @@ public class Map
      * Resize the map to newWidth, newHeight.
      * may clip the edges.
      **/
-    void resize(int requestedWidth, int requestedHeight) {
+    public void resize(int requestedWidth, int requestedHeight) {
 	System.out.println("Call resize");
 	// execute idiot check
 	int newWidth = Math.max(1, requestedWidth);
@@ -221,7 +222,7 @@ public class Map
     /**
      * Resize with layers
      **/
-    void resize(int requestedWidth, int requestedHeight, int requestedLayers) {
+    public void resize(int requestedWidth, int requestedHeight, int requestedLayers) {
 	System.out.println("Call resize with layers");
 	resize (requestedWidth, requestedHeight);
 	
@@ -255,14 +256,14 @@ public class Map
     /**
      * Move the map tiles
      **/
-    void shift(int offX, int offY) {
+    public void shift(int offX, int offY) {
 	System.out.println("Shift to new offset " + offX + ", " + offY + ".");
 	for ( Layer l: layers ) {
 	    l.shift(offX, offY);
 	}
     }
 
-    void clear() {
+    public void clear() {
 	for ( Layer l: layers ) {
 	    l.clear();
 	}

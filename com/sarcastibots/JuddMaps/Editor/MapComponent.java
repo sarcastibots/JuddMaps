@@ -1,6 +1,11 @@
 package com.sarcastibots.JuddMaps.Editor;
 import java.awt.*;
 import javax.swing.*;
+
+import com.sarcastibots.JuddMaps.Map.Map;
+import com.sarcastibots.JuddMaps.Map.MapChangeListener;
+import com.sarcastibots.JuddMaps.Map.Tile;
+
 import java.awt.event.*;
 
 import java.util.*;
@@ -336,14 +341,14 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 	if(!undoStack.empty()) {
 	    redoStack.push(map.toIntArray());
 	    int[][][] i = (int[][][])undoStack.pop();
-	    map.setAllTiles(i, mapEdit.scene.tileset);
+	    map.setAllTiles(i, mapEdit.scene.getTileset());
 	}
     }
     void redo() {
 	if(!redoStack.empty()) {
 	    undoStack.push(map.toIntArray());
 	    int[][][] i = (int[][][])redoStack.pop();
-	    map.setAllTiles(i, mapEdit.scene.tileset);
+	    map.setAllTiles(i, mapEdit.scene.getTileset());
 	}
     }
 

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import com.sarcastibots.JuddMaps.Map.Layer;
+
 @SuppressWarnings("serial")
 public class LayerPropertiesTableModel extends AbstractTableModel {
     

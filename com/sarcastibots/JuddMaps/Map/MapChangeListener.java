@@ -1,6 +1,6 @@
-package com.sarcastibots.JuddMaps.Editor;
+package com.sarcastibots.JuddMaps.Map;
 
-interface MapChangeListener {
+public interface MapChangeListener {
 	public void mapChanging(boolean major);
 	public void mapChanged(boolean major);
 }

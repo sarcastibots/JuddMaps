@@ -3,8 +3,8 @@ import java.awt.*;
 import javax.swing.*;
 
 import com.sarcastibots.JuddMaps.Editor.Camera;
-import com.sarcastibots.JuddMaps.Editor.Scene;
-import com.sarcastibots.JuddMaps.Editor.Sprite;
+import com.sarcastibots.JuddMaps.Map.Scene;
+import com.sarcastibots.JuddMaps.Map.Sprite;
 
 import java.awt.event.*;
 import java.awt.image.*;

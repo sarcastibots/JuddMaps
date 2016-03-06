@@ -1,4 +1,4 @@
-package com.sarcastibots.JuddMaps.Editor;
+package com.sarcastibots.JuddMaps.Map;
 import java.awt.*;
 import java.awt.image.*;
 import javax.swing.*;
@@ -99,7 +99,7 @@ public class Tile
   }
   
   
-  static boolean areEqual(Tile t1, Tile t2) {
+  public static boolean areEqual(Tile t1, Tile t2) {
     if(t1 == null && t2 == null) {
       return true;
     } else if (t1 != null) {
@@ -248,5 +248,61 @@ public class Tile
       g.drawImage(image, x-imageWidth, y-imageHeight, null);
     }
   }
+
+public float getEffect_rScale() {
+    return effect_rScale;
+}
+
+public void setEffect_rScale(float effect_rScale) {
+    this.effect_rScale = effect_rScale;
+}
+
+public float getEffect_gScale() {
+    return effect_gScale;
+}
+
+public void setEffect_gScale(float effect_gScale) {
+    this.effect_gScale = effect_gScale;
+}
+
+public float getEffect_bScale() {
+    return effect_bScale;
+}
+
+public void setEffect_bScale(float effect_bScale) {
+    this.effect_bScale = effect_bScale;
+}
+
+public float getEffect_hue() {
+    return effect_hue;
+}
+
+public void setEffect_hue(float effect_hue) {
+    this.effect_hue = effect_hue;
+}
+
+public float getEffect_sat() {
+    return effect_sat;
+}
+
+public void setEffect_sat(float effect_sat) {
+    this.effect_sat = effect_sat;
+}
+
+public void setName(String name) {
+    this.name = name;
+}
+
+public void setNumber(int number) {
+    this.number = number;
+}
+
+public void setType(String type) {
+    this.type = type;
+}
+
+public void setInfo(String info) {
+    this.info = info;
+}
   
 }

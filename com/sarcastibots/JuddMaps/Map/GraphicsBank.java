@@ -1,6 +1,9 @@
-package com.sarcastibots.JuddMaps.Editor;
+package com.sarcastibots.JuddMaps.Map;
 
 import java.util.List;
+
+import com.sarcastibots.JuddMaps.Editor.RelativePath;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.io.*;
@@ -157,7 +160,7 @@ public class GraphicsBank {
      * Save the tileset to the specified file.
      * Will overwrite file if it exists.
      **/
-    void saveTileset(File to) throws IOException{
+    public void saveTileset(File to) throws IOException{
 
 	File base = to.getParentFile();
 	PrintWriter w = new PrintWriter(new FileWriter(to));
@@ -186,7 +189,7 @@ public class GraphicsBank {
      * Get the tileset file this tileset was loaded from.
      * May return NULL if this is a new tileset that has never been saved.
      **/
-    File getFile() {
+    public File getFile() {
 	return loadedFrom;
     }
 
@@ -222,7 +225,7 @@ public class GraphicsBank {
      * Remove a tile from the graphics bank. Any registered change listeners
      * will be notified.
      **/
-    Tile remove(Tile t) {
+    public Tile remove(Tile t) {
 	//  	Tile rm = null;
 	//  	if(tiles.remove(t)) {
 	//  		rm = t;
@@ -238,7 +241,7 @@ public class GraphicsBank {
      * Add a tile to the graphics bank. Any registered change listeners
      * will be notified.
      **/
-    void add(Tile t) {
+    public void add(Tile t) {
 	/* TODO: validate the tile */
 	tiles.add(t);
 	isUnsaved = true;
@@ -249,14 +252,14 @@ public class GraphicsBank {
 	return tiles.size();
     }
 
-    Dimension getBaseTileSize() {
+    public Dimension getBaseTileSize() {
 	return baseTileSize;
     }
 
     /**
      * Iterator for tile objects
      **/
-    Iterator<Tile> iterator() {
+    public Iterator<Tile> iterator() {
 	return tiles.iterator();
     }
 
@@ -296,7 +299,7 @@ public class GraphicsBank {
      * Get an unused tile number. Returns one more than the
      * highest number used.
      **/
-    int getUnusedNumber() {
+    public int getUnusedNumber() {
 	//TODO why not just use tiles.size()?
 	int n = 1;
 	Iterator<Tile> i = tiles.iterator();
@@ -316,7 +319,7 @@ public class GraphicsBank {
      * This listener will be notified whenever the tileset
      * is changed.
      **/
-    void addChangeListener(GraphicsBankChangeListener l) {
+    public void addChangeListener(GraphicsBankChangeListener l) {
 	changeListeners.add(l);
     }
     /**
@@ -366,14 +369,4 @@ public class GraphicsBank {
 	    l.tileRemoved(this, t);
 	}
     }
-}
-
-
-interface GraphicsBankChangeListener {
-    /* Large change happened such as loading a tileset */
-    public void tilesetUpdated(GraphicsBank bank);
-    /* A single tile was removed */
-    public void tileRemoved(GraphicsBank bank, Tile removed);
-    /* A single tile was added */
-    public void tileAdded(GraphicsBank bank, Tile added);
 }

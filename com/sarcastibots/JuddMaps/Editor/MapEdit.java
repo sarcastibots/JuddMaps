@@ -2,6 +2,13 @@ package com.sarcastibots.JuddMaps.Editor;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.event.*;
+
+import com.sarcastibots.JuddMaps.Map.GraphicsBank;
+import com.sarcastibots.JuddMaps.Map.Map;
+import com.sarcastibots.JuddMaps.Map.Scene;
+import com.sarcastibots.JuddMaps.Map.Sprite;
+import com.sarcastibots.JuddMaps.Map.Tile;
+
 import javax.swing.border.*;
 import javax.swing.*;
 import java.io.*;
@@ -727,12 +734,12 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	    updateLayerComboItems();
 
 	    setIgnoreEffectChanges(true);
-	    r.setValue((int)(scene.effect_rScale * 100));
-	    g.setValue((int)(scene.effect_gScale * 100));
-	    b.setValue((int)(scene.effect_bScale * 100));
-	    h.setValue((int)(scene.effect_hue * 360));
+	    r.setValue((int)(scene.getEffect_rScale() * 100));
+	    g.setValue((int)(scene.getEffect_gScale() * 100));
+	    b.setValue((int)(scene.getEffect_bScale() * 100));
+	    h.setValue((int)(scene.getEffect_hue() * 360));
 	    setIgnoreEffectChanges(false);
-	    s.setValue((int)(scene.effect_sat * 100));
+	    s.setValue((int)(scene.getEffect_sat() * 100));
 
 	    openFile = file; /* TODO: bad variable name */
 	    mainFrame.validate();
