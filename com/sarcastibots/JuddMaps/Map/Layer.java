@@ -128,7 +128,11 @@ public class Layer {
     }
 
     public void setTile(int x, int y, Tile t) {
-	grid.get(x).set(y, t.number);
+	int id = 0;
+	if ( t != null ) {
+	    id = t.number;
+	}
+	grid.get(x).set(y, id);
     }
 
     public Tile getTile(int x, int y) {
