@@ -669,8 +669,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
     /**
      * returns the currently selected tile in the tileChooser.
      **/
-    public Tile getSelectedTile()
-    {
+    public Tile getSelectedTile() {
 	return tileChooser.getSelectedTile();
     }
 

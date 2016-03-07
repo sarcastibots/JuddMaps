@@ -42,14 +42,23 @@ public class GraphicsBank {
 
 
     public GraphicsBank() {
+	baseTileSize = new Dimension(DEFAULT_TILE_WIDTH, DEFAULT_TILE_HEIGHT);
 	tiles = new ArrayList<Tile>();
+	tiles.add( defaultTile() ); 
 	//    sprites = new ArrayList<Sprite>();
 	changeListeners = new ArrayList<>();
 	loadedFrom = null;
 
-	baseTileSize = new Dimension(DEFAULT_TILE_WIDTH, DEFAULT_TILE_HEIGHT);
+	
 
 	isUnsaved = true;
+    }
+
+    private Tile defaultTile() {
+	Tile t = new Tile();
+	t.number = 0;
+	t.name = "null tile";
+	return t;
     }
 
     public void addSprite(String anmFile) {
@@ -301,15 +310,15 @@ public class GraphicsBank {
      **/
     public int getUnusedNumber() {
 	//TODO why not just use tiles.size()?
-	int n = 1;
-	Iterator<Tile> i = tiles.iterator();
-	while(i.hasNext()) {
-	    Tile t = (Tile)i.next();
-	    if(n <= t.getNumber()) {
-		n = t.getNumber() + 1;
-	    }
-	}
-	return n;
+//	int n = 1;
+//	Iterator<Tile> i = tiles.iterator();
+//	while(i.hasNext()) {
+//	    Tile t = (Tile)i.next();
+//	    if(n <= t.getNumber()) {
+//		n = t.getNumber() + 1;
+//	    }
+//	}
+	return tiles.size();
     }
 
 
