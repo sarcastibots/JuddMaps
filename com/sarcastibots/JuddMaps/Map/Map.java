@@ -54,14 +54,15 @@ public class Map
     int layerWidth;
     int layerHeight;
     /**
-     * Maps are constructed with a width and height, originally
+     * Maps are constructed with a width, height and layerCnt, originally
      * having all null tiles.
      */
-    public Map(int width, int height, int layerCnt) {
+    public Map(int width, int height, int layerCnt, GraphicsBank gb) {
 	this.layerHeight = height;
 	this.layerWidth = width;
+	this.gfx = gb;
 	layers = new ArrayList<>();
-	layers.add( new Layer(width, height, LayerType.GROUND, "Ground"));
+	layers.add( new Layer(width, height, LayerType.GROUND, "Ground", gfx));
 	this.addLayers(layerCnt);
 	changeListeners = new ArrayList<>();
     }
@@ -73,8 +74,8 @@ public class Map
      *
      * You can also specify the base tile width and height.
      */
-    public Map(int width, int height, int layerCnt, int tileWidth, int tileHeight) {
-	this(width, height, layerCnt);
+    public Map(int width, int height, int layerCnt, int tileWidth, int tileHeight, GraphicsBank gb) {
+	this(width, height, layerCnt, gb);
 	this.tileWidth = tileWidth;
 	this.tileHeight = tileHeight;
 	zoomWidth = tileWidth;
@@ -248,7 +249,7 @@ public class Map
 
     private void addLayers(int newLayers) {
 	for ( int i = layers.size(); i < newLayers; i++) {
-	    layers.add( new Layer( layerWidth, layerHeight, LayerType.SPRITE, "Sprite_" + String.valueOf(i) ));
+	    layers.add( new Layer( layerWidth, layerHeight, LayerType.SPRITE, "Sprite_" + String.valueOf(i), gfx ));
 	}
     }
 
@@ -280,12 +281,13 @@ public class Map
 	for(int x = 0; x < layerWidth; x++) {
 	    for(int y = 0; y < layerHeight; y++) {
 		for(int l = 0; l < layers.size(); l++) {
-		    Tile tile = layers.get(l).getTile(x, y);
-		    if(tile != null) {
-			set[x][y][l] = tile.number;
-		    } else {
-			set[x][y][l] = 0;
-		    }
+		    set[x][y][l] = layers.get(l).getTileID(x, y);
+//		    Tile tile = layers.get(l).getTile(x, y);
+//		    if(tile != null) {
+//			set[x][y][l] = tile.number;
+//		    } else {
+//			set[x][y][l] = 0;
+//		    }
 		}
 	    }
 	}

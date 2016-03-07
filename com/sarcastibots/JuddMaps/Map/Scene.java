@@ -48,8 +48,9 @@ public class Scene
 
     /* Create a new empty scene */
     public Scene() {
-	map    = new Map(10, 10, 3, 32, 32);
 	tileset = new GraphicsBank();
+	map    = new Map(10, 10, 3, 32, 32, tileset);
+	
     }
 
 
@@ -95,7 +96,7 @@ public class Scene
 
 
 	gfx.loadTileset(ts);
-	Map map = new Map(width, height, layerCnt);
+	Map map = new Map(width, height, layerCnt, gfx);
 
 	line = reader.readLine();
 	tokens = new StringTokenizer(line);

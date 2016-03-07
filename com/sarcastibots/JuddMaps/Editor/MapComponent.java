@@ -5,6 +5,7 @@ import javax.swing.*;
 import com.sarcastibots.JuddMaps.Map.Map;
 import com.sarcastibots.JuddMaps.Map.MapChangeListener;
 import com.sarcastibots.JuddMaps.Map.Tile;
+import com.sarcastibots.JuddMaps.Map.Layer.LayerType;
 
 import java.awt.event.*;
 
@@ -133,8 +134,9 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 	y = y/tileHeight;
 	if(x < map.getWidth() && x >= 0
 		&& y < map.getHeight() && y >= 0) {
-
-	    if(mapEdit.getPaintMode() == MapEdit.PAINT_NORMAL) {
+	    if ( map.getLayer(activeLayer).getLayerType().equals(LayerType.EVENT)) {
+		updateEventAt(x, y, activeLayer);
+	    } else if(mapEdit.getPaintMode() == MapEdit.PAINT_NORMAL) {
 		map.setTile(x, y, activeLayer, mapEdit.getSelectedTile());
 		stateChanged = true;
 	    } else if(mapEdit.getPaintMode() == MapEdit.PAINT_FILL) {
@@ -146,6 +148,10 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
     }
 
 
+
+    private void updateEventAt(int x, int y, int layer) {
+	map.getTile(x, y, layer);
+    }
 
     /* Flood fill operation from http://en.wikipedia.org/wiki/Flood_fill
      * The section used is as follows:
@@ -222,17 +228,19 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
     boolean btn2Pressed = false;
     int oldX = 0;
     int oldY = 0;
+
     public void mousePressed(MouseEvent e) {
 	if(stateChanged) {
 	    saveUndoState();
 	    stateChanged = false;
 	}
 	switch(e.getButton()) {
-	case MouseEvent.BUTTON1: btn1Pressed = true;
-	mapClicked(e.getX(), e.getY());
-	this.repaint();
-	break;
-	/*
+	case MouseEvent.BUTTON1: 
+	    btn1Pressed = true;
+	    mapClicked(e.getX(), e.getY());
+	    this.repaint();
+	    break;
+	    /*
 			default:
 				btn2Pressed = true;
 				Dimension d = viewport.getSize();
@@ -240,7 +248,7 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 				viewport.setViewPosition(newPoint);
 				viewport.repaint();
 				break;
-	 */
+	     */
 
 
 	default:
