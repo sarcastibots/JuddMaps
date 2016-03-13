@@ -94,63 +94,86 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
      * also draws a grid...
      */
     synchronized public void paintComponent(Graphics g) {
-	g.setColor(Color.white);
-	g.fillRect(0,0,width*tileWidth, height*tileHeight);
+	clearBackground(g);
 
 	//as the tiles are drawn with the origin at the
 	//bottom right, but the component's origin is the top left,
 	//we need to set the offset so we can see the tiles
 	map.render(g, viewport.getViewPosition(), viewport.getSize());
 
-
-	//map.render(g, -tileWidth, -tileHeight);
-	if(showGrid)
-	{
-	    g.setColor(Color.gray);
-	    for(int i=0; i<width; i++)
-	    {
-		g.drawLine(i*tileWidth, 0, i*tileWidth, height*tileHeight);
-	    }
-
-	    for(int j=0; j<height; j++)
-	    {
-		g.drawLine(0,j*tileHeight, width*tileWidth, j*tileHeight);
-	    }
+	if(showGrid) {
+	    renderGrid(g);
 	}
+	renderBoarder(g);
+
+    }
+
+    private void clearBackground(Graphics g) {
+	g.setColor(Color.white);
+	g.fillRect(0,0,width*tileWidth, height*tileHeight);
+    }
+
+    private void renderBoarder(Graphics g) {
 	((Graphics2D)g).setStroke(new BasicStroke(2));
 	g.setColor(Color.black);
 	g.drawLine(0, 0, width * tileWidth, 0);
 	g.drawLine(0, 0, 0, height * tileHeight);
 	g.drawLine(width * tileWidth, 0, width * tileWidth, height * tileHeight);
 	g.drawLine(0, height * tileHeight, width * tileWidth, height * tileHeight);
+    }
 
+    private void renderGrid(Graphics g) {
+	g.setColor(Color.gray);
+	for(int i=0; i<width; i++)
+	{
+	g.drawLine(i*tileWidth, 0, i*tileWidth, height*tileHeight);
+	}
+
+	for(int j=0; j<height; j++)
+	{
+	g.drawLine(0,j*tileHeight, width*tileWidth, j*tileHeight);
+	}
     }
 
     /**
      * change the given tile to the one selected in the map editor.
      */
-    public void mapClicked(int x, int y) {
-	x = x/tileWidth;
-	y = y/tileHeight;
-	if(x < map.getWidth() && x >= 0
-		&& y < map.getHeight() && y >= 0) {
+    public void mapClicked(int clickX, int clickY) {
+	int tileX = clickX/tileWidth;
+	int tileY = clickY/tileHeight;
+	if(isClickInMap(tileX, tileY)) {
 	    if ( map.getLayer(activeLayer).getLayerType().equals(LayerType.EVENT)) {
-		updateEventAt(x, y, activeLayer);
-	    } else if(mapEdit.getPaintMode() == MapEdit.PAINT_NORMAL) {
-		map.setTile(x, y, activeLayer, mapEdit.getSelectedTile());
-		stateChanged = true;
-	    } else if(mapEdit.getPaintMode() == MapEdit.PAINT_FILL) {
-		recursiveFlood(x, y, activeLayer, map.getTile(x, y, activeLayer), mapEdit.getSelectedTile());
+		updateEventAt(tileX, tileY, activeLayer);
 	    } else {
-		System.out.println("Invalid paint mode");
+		paintTile(tileX, tileY);
 	    }
+		
 	}
     }
 
+    private void paintTile(int tileX, int tileY) {
+	if(mapEdit.getPaintMode() == MapEdit.PAINT_NORMAL) {
+	    map.setTile(tileX, tileY, activeLayer, mapEdit.getSelectedTile());
+	    stateChanged = true;
+	} else if(mapEdit.getPaintMode() == MapEdit.PAINT_FILL) {
+	    recursiveFlood(tileX, tileY, activeLayer, map.getTile(tileX, tileY, activeLayer), mapEdit.getSelectedTile());
+	} else {
+	    System.out.println("Invalid paint mode");
+	}
+    }
 
+    private boolean isClickInMap(int tileX, int tileY) {
+	return tileX < map.getWidth() && tileX >= 0
+		&& tileY < map.getHeight() && tileY >= 0;
+    }
 
     private void updateEventAt(int x, int y, int layer) {
-	map.getTile(x, y, layer);
+	int eventIndex = map.getEvent(x, y, layer);
+	if ( eventIndex == 0 ) {
+	    eventIndex = map.addEvent( x, y, layer);
+	} 
+	    // updateEvent( eventIndex );
+	
     }
 
     /* Flood fill operation from http://en.wikipedia.org/wiki/Flood_fill

@@ -60,6 +60,7 @@ public class Layer {
      */
     public void render(Graphics g, Point origin, Dimension size, int zoomWidth, int zoomHeight) {
 	if (visible) {
+	    //TODO add event layer painting
 	    double minX = Math.max(origin.getX()/zoomWidth, 0);
 	    double maxX = Math.min((origin.getX()+size.getWidth())/zoomWidth, gridWidth);
 
@@ -132,6 +133,10 @@ public class Layer {
 	if ( t != null ) {
 	    id = t.number;
 	}
+	setTile( x, y, id );
+    }
+    
+    public void setTile(int x, int y, int id) {
 	grid.get(x).set(y, id);
     }
 

@@ -28,8 +28,8 @@ import java.util.*;
  * stuff usually happens in the "Scene", using sprites, although the map does
  * support changing tiles on the fly if for example a switch were to move a wall.
  *
- *
  */
+
 public class Map
 {
     /* change the below two numbers if you want the grid size to be different.
@@ -53,6 +53,8 @@ public class Map
     List<Layer> layers;
     int layerWidth;
     int layerHeight;
+    List<Event> events;
+    
     /**
      * Maps are constructed with a width, height and layerCnt, originally
      * having all null tiles.
@@ -65,6 +67,8 @@ public class Map
 	layers.add( new Layer(width, height, LayerType.GROUND, "Ground", gfx));
 	this.addLayers(layerCnt);
 	changeListeners = new ArrayList<>();
+	
+	events = new ArrayList<>();
     }
 
 
@@ -387,6 +391,19 @@ public class Map
 
     public Layer getLayer(int z) {
 	return this.layers.get(z);
+    }
+
+
+    public int getEvent(int x, int y, int layer) {
+	return this.layers.get(layer).getTileID(x, y);
+    }
+
+
+    public int addEvent( int x, int y, int layer ) {
+	Event event = new Event( x, y, this.events.size() );
+	this.events.add(event);
+	this.getLayer(layer).setTile(x, y, event.id);
+	return event.id;
     }
 
 
