@@ -12,12 +12,7 @@ import java.util.*;
 
 
 /**
- * A Map is a three layered tile map.
- * Layer 1 is the base layer. If a tile in this layer is null, it is
- * replaced by the base tile (the first tile in the tile set).<p>
- * Layer 2 is a special layer in which tiles are rendered in front of or behind
- * any sprites, depending on its location.<p>
- * Layer 3 is rendered last, over the top of everything else.<p>
+ * A Map is a layered tile map. layers are drawn sequentially
  *
  * Tiles do not have to be the same size. A standard tile is 32 by 32
  * pixels. If a tile is larger, it will be rendered in place, with the origin
@@ -46,9 +41,6 @@ public class Map
     GraphicsBank gfx;
 
     List<MapChangeListener> changeListeners;
-
-//    final static int LAYERS = 3;
-
 
     List<Layer> layers;
     int layerWidth;
@@ -88,10 +80,6 @@ public class Map
 
     /**
      * set the tile at location x, y in layer z.
-     * Layers are:
-     * 0: ground level.
-     * 1: on or just above ground.
-     * 2: above ground (and everything else).
      * @param x the X-location of the tile
      * @param y the Y-location of the tile.
      * @param z the layer the tile is on.
@@ -99,13 +87,11 @@ public class Map
      */
     public void setTile(int x, int y, int z, Tile t) {
 	layers.get(z).setTile(x, y, t);
-	//tiles[x][y][z] = t;
     }
 
     public void setZoom(float z) {
 	zoomWidth  = (int)(tileWidth * z);
 	zoomHeight = (int)(tileHeight * z);
-
     }
 
     /**
@@ -286,12 +272,6 @@ public class Map
 	    for(int y = 0; y < layerHeight; y++) {
 		for(int l = 0; l < layers.size(); l++) {
 		    set[x][y][l] = layers.get(l).getTileID(x, y);
-//		    Tile tile = layers.get(l).getTile(x, y);
-//		    if(tile != null) {
-//			set[x][y][l] = tile.number;
-//		    } else {
-//			set[x][y][l] = 0;
-//		    }
 		}
 	    }
 	}
@@ -306,12 +286,6 @@ public class Map
 	gfx = bank;
 	resize(set.length, set[0].length, set[0][0].length);
 
-	/*
-		if(set.length == tiles.length &&
-		   set[0].length == tiles[0].length &&
-		   set[0][0].length == tiles[0][0].length) {
-	 */ 	
-
 	for ( int l = 0; l < layers.size(); l++ ) {
 	    for(int x = 0; x < layerWidth; x++) {
 		    for(int y = 0; y < layerHeight; y++) {
@@ -320,13 +294,6 @@ public class Map
 		}
 	    
 	}
-	
-	/*
-		} else {
-			System.out.println("Use resize() Before calling setAllTiles().");
-			throw new RuntimeException("The int array provided does not match the map dimensions.");
-		}
-	 */
     }
 
     /* Note: Behaviour unknown. */
@@ -351,11 +318,9 @@ public class Map
 	((MapChangeListener)i.next()).mapChanged(m);
     }
 
-
     public int getLayerCount() {
 	return this.layers.size();
     }
-
 
     public String[] getLayerNames() {
 	String[] names = new String[layers.size()];
@@ -364,7 +329,6 @@ public class Map
 	}
 	return names;
     }
-
 
     public void moveLayer(int oldLayerPosition, int newLayerPosition) {
 	Layer layer = layers.get(oldLayerPosition);
