@@ -30,7 +30,6 @@ public class GraphicsBank {
 
 
     private List<Tile> tiles;
-    //  private ArrayList<Sprite> sprites;
 
 
     private List<GraphicsBankChangeListener> changeListeners;
@@ -44,13 +43,9 @@ public class GraphicsBank {
     public GraphicsBank() {
 	baseTileSize = new Dimension(DEFAULT_TILE_WIDTH, DEFAULT_TILE_HEIGHT);
 	tiles = new ArrayList<Tile>();
-	tiles.add( defaultTile() ); 
-	//    sprites = new ArrayList<Sprite>();
+	tiles.add( defaultTile() );
 	changeListeners = new ArrayList<>();
 	loadedFrom = null;
-
-	
-
 	isUnsaved = true;
     }
 
@@ -60,16 +55,6 @@ public class GraphicsBank {
 	t.name = "null tile";
 	return t;
     }
-
-    public void addSprite(String anmFile) {
-	addSprite(new File(anmFile));
-    }
-
-    public void addSprite(File anmFile) {
-
-
-    }
-
 
     public void loadTileset(String from) throws FileNotFoundException, IOException {
 	loadTileset(new File(from));
@@ -136,7 +121,6 @@ public class GraphicsBank {
 	    tokens[TYPE] = tokens[TYPE].trim();
 
 	    tileFile = new File(baseDirectory, tokens[PATH]);
-	    //System.out.println("load tile image: "+tileFile);
 	    if(!tileFile.exists()) {
 		tileFile = new File(tokens[PATH]);
 		if(tileFile.exists()) {
@@ -151,7 +135,6 @@ public class GraphicsBank {
 		r.close();
 		r = null;
 	    }
-	    //System.out.println("New tile: "+id+", name = "+tokens[NAME]);
 
 	    Tile t = null;
 
@@ -162,7 +145,7 @@ public class GraphicsBank {
 	    }
 	    tiles.add(t);
 	}
-    } //end loadTileset
+    }
 
 
     /**
@@ -235,10 +218,6 @@ public class GraphicsBank {
      * will be notified.
      **/
     public Tile remove(Tile t) {
-	//  	Tile rm = null;
-	//  	if(tiles.remove(t)) {
-	//  		rm = t;
-	//  	}
 	if(t != null) {
 	    fireRemoveEvent(t);
 	    isUnsaved = true;
@@ -277,8 +256,7 @@ public class GraphicsBank {
      * graphics bank. This will override any individually set
      * effects on all tiles.
      **/
-    public void setEffect(float r, float g, float b, float h, float s, float z)
-    {
+    public void setEffect(float r, float g, float b, float h, float s, float z) {
 	Iterator<Tile> i = tiles.iterator();
 	while(i.hasNext()) {
 	    ((Tile)(i.next())).adjustRGBHS(r, g, b, h, s, z);
@@ -309,19 +287,9 @@ public class GraphicsBank {
      * highest number used.
      **/
     public int getUnusedNumber() {
-	//TODO why not just use tiles.size()?
-//	int n = 1;
-//	Iterator<Tile> i = tiles.iterator();
-//	while(i.hasNext()) {
-//	    Tile t = (Tile)i.next();
-//	    if(n <= t.getNumber()) {
-//		n = t.getNumber() + 1;
-//	    }
-//	}
-	return tiles.size();
+	Tile lastTileInBank = tiles.get(tiles.size()-1);
+	return lastTileInBank.number + 1;
     }
-
-
 
     /**
      * Add a GraphicsBankChangeListener to the graphics bank.
@@ -351,6 +319,7 @@ public class GraphicsBank {
 	    l.tilesetUpdated(this);
 	}
     }
+    
     /**
      * Called whenever a tile is added using add(). will cause
      * the tileAdded() method of every registered
@@ -365,6 +334,7 @@ public class GraphicsBank {
 	    l.tileAdded(this, t);
 	}
     }
+    
     /**
      * Called whenever a tile is removed using remove().
      * will cause the tileRemoved() method of every registered

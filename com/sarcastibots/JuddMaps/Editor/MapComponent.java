@@ -2,6 +2,7 @@ package com.sarcastibots.JuddMaps.Editor;
 import java.awt.*;
 import javax.swing.*;
 
+import com.sarcastibots.JuddMaps.Map.Layer;
 import com.sarcastibots.JuddMaps.Map.Map;
 import com.sarcastibots.JuddMaps.Map.MapChangeListener;
 import com.sarcastibots.JuddMaps.Map.Tile;
@@ -169,10 +170,10 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 
     private void updateEventAt(int x, int y, int layer) {
 	int eventIndex = map.getEvent(x, y, layer);
-	if ( eventIndex == 0 ) {
+	if ( eventIndex == Layer.BASE_TILE_ID ) {
 	    eventIndex = map.addEvent( x, y, layer);
 	} 
-	    // updateEvent( eventIndex );
+	    // TODO updateEvent( eventIndex );
 	
     }
 

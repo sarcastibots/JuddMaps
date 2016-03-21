@@ -18,7 +18,6 @@ public class Layer {
     String name;
     GraphicsBank gfx; //flyweight reference
     // since we need to resize dynamically 'List' is the most appropriate data structure.
-    // List<Integer> grid;
     // each inner list represents a column
     List<List<Integer>> grid;
     private int gridWidth, gridHeight;
@@ -44,7 +43,6 @@ public class Layer {
 
     private List<Integer> newColumn() {
 	List<Integer> column = new ArrayList<>(gridHeight);
-	// this is necessary to avoid an index out of bounds exception 
 	for ( int j = 0; j < gridHeight; j++) {
 	    column.add(new Integer( BASE_TILE_ID ) );
 	}
@@ -60,7 +58,6 @@ public class Layer {
      */
     public void render(Graphics g, Point origin, Dimension size, int zoomWidth, int zoomHeight) {
 	if (visible) {
-	    //TODO add event layer painting
 	    double minX = Math.max(origin.getX()/zoomWidth, 0);
 	    double maxX = Math.min((origin.getX()+size.getWidth())/zoomWidth, gridWidth);
 
@@ -78,7 +75,7 @@ public class Layer {
     }
 
     /**
-     * This method is called {@link}Map.resize use that method instead
+     * This method is called by {@link}Map.resize use that method instead
      **/
     protected void resize(int newWidth, int newHeight)
     {	
@@ -141,7 +138,14 @@ public class Layer {
     }
 
     public Tile getTile(int x, int y) {
-	return gfx.getTile(grid.get(x).get(y));
+	int tileID = grid.get(x).get(y);
+	if ( tileID == BASE_TILE_ID ) {
+	    return null;
+	} else if ( this.layerType.equals(LayerType.EVENT)){
+	    return new EventTile(tileID);
+	} else {
+	    return gfx.getTile(tileID);
+	}
     }
 
     /**

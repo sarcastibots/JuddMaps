@@ -20,8 +20,8 @@ public class Tile
   float effect_hue;
   float effect_sat;
   
-  private int imageWidth = 0;
-  private int imageHeight = 0;
+  int imageWidth = 0;
+  int imageHeight = 0;
   int zoomWidth, zoomHeight;
   
   String name = null;
@@ -50,7 +50,6 @@ public class Tile
     zoomWidth = imageWidth;
     zoomHeight = imageHeight;
     
-    //System.out.println(imageWidth);
   }
   
   public Tile(int number, String path, String name, String type, String info)

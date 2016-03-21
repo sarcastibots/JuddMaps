@@ -364,7 +364,7 @@ public class Map
 
 
     public int addEvent( int x, int y, int layer ) {
-	Event event = new Event( x, y, this.events.size() );
+	Event event = new Event( x, y, this.events.size() + 1 );
 	this.events.add(event);
 	this.getLayer(layer).setTile(x, y, event.id);
 	return event.id;
