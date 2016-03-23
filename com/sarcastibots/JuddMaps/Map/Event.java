@@ -21,4 +21,20 @@ public class Event {
 	conditions = new ArrayList<>();
 	results = new ArrayList<>();
     }
+    
+    public int getID() {
+	return this.id;
+    }
+
+    public Rectangle getLocation() {
+	return this.location;
+    }
+
+    public List<String> getConditions() {
+	return conditions;
+    }
+    
+    public List<String> getResults() {
+	return results;
+    }
 }

@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.event.*;
 
+import com.sarcastibots.JuddMaps.Map.Event;
 import com.sarcastibots.JuddMaps.Map.GraphicsBank;
 import com.sarcastibots.JuddMaps.Map.Map;
 import com.sarcastibots.JuddMaps.Map.Scene;
@@ -48,6 +49,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
     Scene        scene;         // Scene in which the map is found
     GraphicsBank gfx;           // Graphics bank used by this scene. All the tiles.
 
+    EventEditor eventEditor;
     LayerPropertiesFrame layerPropertiesFrame;
     /** Layer combo */
     JComboBox<String>  layerCombo;
@@ -136,6 +138,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	tileChooser = new TileChooser(gfx, mainFrame);
 	chooser = new JFileChooser("scenes");
 	tschooser = new JFileChooser("gfx");
+	eventEditor = new EventEditor();
 	layerPropertiesFrame = new LayerPropertiesFrame( this );
 	layerPropertiesFrame.setMap(map);
 
@@ -925,10 +928,15 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	}
     }
 
-
-
-    //String userHome = System.getProperty("user.home");
-
+    public void editEvent(Event e) {
+	if ( eventEditor == null ) {
+	    eventEditor = new EventEditor();
+	}
+	eventEditor.setEvent( e );
+	eventEditor.setVisible(true);
+	
+    }
+    
     public static void main(String[] a)
     {
 	//System.out.print("The default OpenGL setting on this system is ");
@@ -937,7 +945,5 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 
 	new MapEdit();
     }
-
-
 
 }

@@ -358,16 +358,20 @@ public class Map
     }
 
 
-    public int getEvent(int x, int y, int layer) {
-	return this.layers.get(layer).getTileID(x, y);
+    public Event getEvent(int x, int y, int layer) {
+	int eventIndex = this.layers.get(layer).getTileID(x, y);
+	if ( eventIndex == Layer.BASE_TILE_ID ) {
+	    return null;
+	}
+	return this.events.get(eventIndex - 1);
     }
 
 
-    public int addEvent( int x, int y, int layer ) {
+    public Event addEvent( int x, int y, int layer ) {
 	Event event = new Event( x, y, this.events.size() + 1 );
 	this.events.add(event);
 	this.getLayer(layer).setTile(x, y, event.id);
-	return event.id;
+	return event;
     }
 
 
