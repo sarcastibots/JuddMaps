@@ -12,6 +12,12 @@ public class Event {
     List<String> conditions;
     List<String> results;
     
+    protected Event () {
+	location = new Rectangle();
+	conditions = new ArrayList<>();
+	results = new ArrayList<>();
+    }
+    
     public Event ( int x, int y, int id) {
 	this.id = id;
 	int width = 0;

@@ -114,7 +114,7 @@ public class Scene
 	    line = reader.readLine();
 	}
 
-
+	line = reader.readLine();
 	for(int z=0; z< layerCnt; z++) {
 	    line = reader.readLine();
 	    tokens = new StringTokenizer(line);
@@ -126,6 +126,33 @@ public class Scene
 		    map.setTile(x, y, z, gfx.getTile(Integer.parseInt(code)));
 		}
 	    }
+	}
+	
+	while(! line.equals(".")){
+	    line = reader.readLine();
+	}
+	line = reader.readLine();
+	while(! line.equals(".")){
+	    line = reader.readLine();
+	    tokens = new StringTokenizer(line, ",");
+	    Event e = new Event();
+	    e.id = Integer.parseInt(tokens.nextToken());
+	    tokens.nextToken();// disregard '('
+	    e.location.x = Integer.parseInt(tokens.nextToken());
+	    e.location.y = Integer.parseInt(tokens.nextToken());
+	    e.location.width = Integer.parseInt(tokens.nextToken());
+	    e.location.height = Integer.parseInt(tokens.nextToken());
+	    tokens.nextToken(); // disregard ')'
+	    tokens.nextToken(); // disregard "Conditions"
+	    String conditions = tokens.nextToken();
+	    while (! conditions.equals("Results") ) {
+		e.conditions.add(conditions);
+		conditions = tokens.nextToken();
+	    }
+	    while ( tokens.hasMoreTokens() ) {
+		e.results.add(tokens.nextToken());
+	    }
+	    map.events.add(e);
 	}
 	reader.close();
 
@@ -195,64 +222,91 @@ public class Scene
 	try {
 	    PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-	    String line = "";
-
-	    int width = map.getWidth();
-	    int height = map.getHeight();
-	    int layer = map.getLayerCount();
-
-
-
-	    File wd = new File(file.getParentFile().getCanonicalFile().toString());
-	    File ts = new File(tileset.getFile().getCanonicalFile().toString());
-
-	    String relativePath = RelativePath.getRelativePath(wd, ts);
-
-
-
-	    line = width + " " + height + " " + layer + " " + relativePath;
-	    writer.println(line);
-
-	    line = "colorization " + effect_rScale +
-		    " " + effect_gScale +
-		    " " + effect_bScale +
-		    " " + effect_hue    +
-		    " " + effect_sat;
-	    writer.println(line);
-
-	    System.out.println("Colorization red in save is "+effect_rScale);			
+	    outputHeader(file, writer);
 	    writer.println(".");
 
-	    for( Layer l: map.layers) {
-		writer.print(l.getName() + " " + l.getLayerType() + " ");
-		
-		for(int y=0; y < height; y++) {
-		    for(int x=0; x < width; x++) {
-			Tile t = l.getTile(x, y);
-			String output;
-			if ( t == null ) {
-			    output = "0 ";
-			} else {
-			    output = String.valueOf(t.getNumber()) + " ";
-			}
-			// since we're using a buffered writer we can be very granular with our writes
-			writer.print( output );
-		    }
-
-		}
-		writer.println();
-	    }
+	    outputLayers(writer);
+	    writer.println(".");
+	    
+	    outputEvents(writer);
+	    writer.println(".");
 
 	    writer.flush();
 	    writer.close();
-
-
 	}
 	catch(IOException e) {
-	    throw new RuntimeException("Could not save the level");
+	    throw new RuntimeException("Could not save the map");
 	}
 
 	System.err.println("Saved");
+    }
+
+    private void outputHeader(File file, PrintWriter writer)
+	    throws IOException {
+	String line = "";
+
+	int width = map.getWidth();
+	int height = map.getHeight();
+	int layer = map.getLayerCount();
+
+
+
+	File wd = new File(file.getParentFile().getCanonicalFile().toString());
+	File ts = new File(tileset.getFile().getCanonicalFile().toString());
+
+	String relativePath = RelativePath.getRelativePath(wd, ts);
+
+
+
+	line = width + " " + height + " " + layer + " " + relativePath;
+	writer.println(line);
+
+	line = "colorization " + effect_rScale +
+	    " " + effect_gScale +
+	    " " + effect_bScale +
+	    " " + effect_hue    +
+	    " " + effect_sat;
+	writer.println(line);
+    }
+
+    private void outputLayers(PrintWriter writer) {
+	writer.println("Layers");
+	for( Layer l: map.layers) {
+	writer.print(l.getName() + " " + l.getLayerType() + " ");
+	
+	for(int y=0; y < map.layerHeight; y++) {
+	    for(int x=0; x < map.layerWidth; x++) {
+		Tile t = l.getTile(x, y);
+		String output;
+		if ( t == null ) {
+		    output = "0 ";
+		} else {
+		    output = String.valueOf(t.getNumber()) + " ";
+		}
+		// since we're using a buffered writer we can be very granular with our writes
+		writer.print( output );
+	    }
+
+	}
+	writer.println();
+	}
+    }
+
+    private void outputEvents(PrintWriter writer) {
+	writer.println("Events");
+	for ( Event e: map.events) {
+	writer.print(e.id + ", ");
+	writer.print("( " + e.location.x +", " + e.location.y + ", " + e.location.width + ", " + e.location.height + " ) ");
+	writer.print("Conditions, ");
+	for ( String s: e.conditions ) {
+	    writer.print(s + ", ");
+	}
+	writer.print("Results, ");
+	for ( String s: e.results ) {
+	    writer.print(s + ", ");
+	}
+	writer.println();
+	}
     }
 
     /**
