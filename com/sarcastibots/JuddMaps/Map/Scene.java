@@ -95,7 +95,7 @@ public class Scene
 	System.out.println("Attempt to load tileset "+ts.getAbsoluteFile());
 
 
-	gfx.loadTileset(ts);
+	gfx.addTileset(ts);
 	Map map = new Map(width, height, layerCnt, gfx);
 
 	line = reader.readLine();
@@ -132,27 +132,29 @@ public class Scene
 	    line = reader.readLine();
 	}
 	line = reader.readLine();
+	line = reader.readLine();
 	while(! line.equals(".")){
-	    line = reader.readLine();
 	    tokens = new StringTokenizer(line, ",");
 	    Event e = new Event();
 	    e.id = Integer.parseInt(tokens.nextToken());
-	    tokens.nextToken();// disregard '('
-	    e.location.x = Integer.parseInt(tokens.nextToken());
-	    e.location.y = Integer.parseInt(tokens.nextToken());
-	    e.location.width = Integer.parseInt(tokens.nextToken());
-	    e.location.height = Integer.parseInt(tokens.nextToken());
-	    tokens.nextToken(); // disregard ')'
+	    String strX = tokens.nextToken().trim().substring(1);
+	    e.location.x = Integer.parseInt(strX);
+	    e.location.y = Integer.parseInt(tokens.nextToken().trim());
+	    e.location.width = Integer.parseInt(tokens.nextToken().trim());
+	    String strHeight = tokens.nextToken().trim();
+	    strHeight = strHeight.substring(0, strHeight.length() - 1); 
+	    e.location.height = Integer.parseInt(strHeight);
 	    tokens.nextToken(); // disregard "Conditions"
-	    String conditions = tokens.nextToken();
+	    String conditions = tokens.nextToken().trim();
 	    while (! conditions.equals("Results") ) {
 		e.conditions.add(conditions);
-		conditions = tokens.nextToken();
+		conditions = tokens.nextToken().trim();
 	    }
 	    while ( tokens.hasMoreTokens() ) {
-		e.results.add(tokens.nextToken());
+		e.results.add(tokens.nextToken().trim());
 	    }
 	    map.events.add(e);
+	    line = reader.readLine();
 	}
 	reader.close();
 
@@ -296,7 +298,7 @@ public class Scene
 	writer.println("Events");
 	for ( Event e: map.events) {
 	writer.print(e.id + ", ");
-	writer.print("( " + e.location.x +", " + e.location.y + ", " + e.location.width + ", " + e.location.height + " ) ");
+	writer.print("(" + e.location.x +", " + e.location.y + ", " + e.location.width + ", " + e.location.height + " ), ");
 	writer.print("Conditions, ");
 	for ( String s: e.conditions ) {
 	    writer.print(s + ", ");

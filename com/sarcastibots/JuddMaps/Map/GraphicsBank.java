@@ -2,11 +2,14 @@ package com.sarcastibots.JuddMaps.Map;
 
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
 import com.sarcastibots.JuddMaps.Editor.RelativePath;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.io.*;
+import java.net.URL;
 import java.awt.*;
 
 
@@ -50,9 +53,24 @@ public class GraphicsBank {
     }
 
     private Tile defaultTile() {
-	Tile t = new Tile();
-	t.number = 0;
-	t.name = "null tile";
+	int tileNumber = 0;
+	String tilePath = "/basic-tiles/null-tile.png";
+	String tileName = "null tile";
+	String tileType = "default";
+	Tile t = new Tile( );
+	
+	t.number = tileNumber;
+	t.name = tileName;
+	t.type = tileType;
+	t.path = tilePath;
+	
+	URL imgURL = getClass().getResource(tilePath);
+	t.image = new ImageIcon(imgURL).getImage();
+	t.imageWidth = t.image.getWidth(null);
+	t.imageHeight = t.image.getHeight(null);
+	t.zoomWidth = t.imageWidth;
+	t.zoomHeight = t.imageHeight;
+	
 	return t;
     }
 
