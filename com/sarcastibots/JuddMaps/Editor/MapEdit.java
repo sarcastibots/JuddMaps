@@ -900,7 +900,7 @@ public class MapEdit implements ActionListener, ChangeListener, KeyListener
 	    int success = tschooser.showOpenDialog(mainFrame);
 	    if (success == JFileChooser.APPROVE_OPTION) {
 		GraphicsBank g = new GraphicsBank();
-		g.loadTileset(tschooser.getSelectedFile());
+		g.addTileset(tschooser.getSelectedFile());
 		setGraphicsBank(g);
 	    }
 	} catch(FileNotFoundException e) {
