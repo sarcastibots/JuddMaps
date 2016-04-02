@@ -44,6 +44,7 @@ hs_err_pid*
 
 ## File-based project format:
 *.iws
+*.ipr
 
 ## Plugin-specific files:
 
