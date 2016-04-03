@@ -8,29 +8,28 @@ import java.util.List;
 
 public class Layer {
 
+    public static final int BASE_TILE_ID = 0;
     public enum LayerType {
 	GROUND,
-	SPRITE
+	SPRITE,
+	EVENT
     }
-//    public static final int GROUND = 0;
-//    public static final int SPRITE = 1;
 
     String name;
-    /** TODO instead of creating a pile of Tile objects we'll use a flyweight class so 
-     * Layer only needs an integer array and a reference to the flyweight
-     * since we need to resize dynamically 'List' is the most appropriate data structure.*/
-    //List<Integer> grid;
+    GraphicsBank gfx; //flyweight reference
+    // since we need to resize dynamically 'List' is the most appropriate data structure.
     // each inner list represents a column
-    List<List<Tile>> grid;
+    List<List<Integer>> grid;
     private int gridWidth, gridHeight;
 
     private LayerType layerType;
     private boolean visible;
 
-    public Layer(int width, int height, LayerType type, String name) {
+    public Layer(int width, int height, LayerType type, String name, GraphicsBank gb) {
 	this.gridWidth = width;
 	this.gridHeight = height;
 	this.name = name;
+	this.gfx = gb;
 	this.setLayerType(type);
 
 	// provide starting size argument to reduce resizes
@@ -42,11 +41,10 @@ public class Layer {
 	visible = true;
     }
 
-    private List<Tile> newColumn() {
-	List<Tile> column = new ArrayList<>(gridHeight);
-	// this is necessary to avoid an index out of bounds exception 
+    private List<Integer> newColumn() {
+	List<Integer> column = new ArrayList<>(gridHeight);
 	for ( int j = 0; j < gridHeight; j++) {
-	    column.add(new Tile() );
+	    column.add(new Integer( BASE_TILE_ID ) );
 	}
 	return column;
     }
@@ -77,7 +75,7 @@ public class Layer {
     }
 
     /**
-     * This method is called {@link}Map.resize use that method instead
+     * This method is called by {@link}Map.resize use that method instead
      **/
     protected void resize(int newWidth, int newHeight)
     {	
@@ -112,7 +110,7 @@ public class Layer {
 	while ( gridHeight != newHeight ) {
 	    // decrement first to avoid out of bounds exception
 	    gridHeight--;
-	    for ( List<Tile> column: grid ) {
+	    for ( List<Integer> column: grid ) {
 		column.remove(gridHeight);
 	    }
 	}
@@ -120,19 +118,34 @@ public class Layer {
 
     private void addRows(int newHeight) {
 	for ( int i = gridHeight; i <= newHeight; i++ ) {
-	    for ( List<Tile> column: grid ) {
-		column.add( new Tile() );
+	    for ( List<Integer> column: grid ) {
+		column.add( new Integer( BASE_TILE_ID ) );
 	    }
 	}
 	gridHeight = newHeight;
     }
 
     public void setTile(int x, int y, Tile t) {
-	grid.get(x).set(y, t);
+	int id = 0;
+	if ( t != null ) {
+	    id = t.number;
+	}
+	setTile( x, y, id );
+    }
+    
+    public void setTile(int x, int y, int id) {
+	grid.get(x).set(y, id);
     }
 
     public Tile getTile(int x, int y) {
-	return grid.get(x).get(y);
+	int tileID = grid.get(x).get(y);
+	if ( tileID == BASE_TILE_ID ) {
+	    return null;
+	} else if ( this.layerType.equals(LayerType.EVENT)){
+	    return new EventTile(tileID);
+	} else {
+	    return gfx.getTile(tileID);
+	}
     }
 
     /**
@@ -142,7 +155,7 @@ public class Layer {
      */
     public void shift(int offX, int offY) {
 
-	for ( List<Tile> column: grid) {
+	for ( List<Integer> column: grid) {
 	    shiftColumn(column, offY);
 	}
 
@@ -171,7 +184,7 @@ public class Layer {
      * non-wrapping column shift
      * @param offY
      */
-    private void shiftColumn(List<Tile> column, int offY) {
+    private void shiftColumn(List<Integer> column, int offY) {
 	// if offset is positive we want to add that many new fields to the beginning of the list and remove them from the end
 	int insertLocation;
 	int removeLocation;
@@ -184,7 +197,7 @@ public class Layer {
 	}
 	int shiftMag = Math.abs(offY);
 	for ( int i = 0; i < shiftMag; i++ ) {
-	    column.add(insertLocation, new Tile());
+	    column.add(insertLocation, BASE_TILE_ID);
 	    column.remove(removeLocation);
 	}
     }
@@ -220,5 +233,9 @@ public class Layer {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public int getTileID(int x, int y) {
+	return grid.get(x).get(y);
     }
 }

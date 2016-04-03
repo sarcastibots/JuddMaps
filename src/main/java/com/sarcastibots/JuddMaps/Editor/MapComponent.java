@@ -2,9 +2,11 @@ package com.sarcastibots.JuddMaps.Editor;
 import java.awt.*;
 import javax.swing.*;
 
+import com.sarcastibots.JuddMaps.Map.Event;
 import com.sarcastibots.JuddMaps.Map.Map;
 import com.sarcastibots.JuddMaps.Map.MapChangeListener;
 import com.sarcastibots.JuddMaps.Map.Tile;
+import com.sarcastibots.JuddMaps.Map.Layer.LayerType;
 
 import java.awt.event.*;
 
@@ -93,59 +95,86 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
      * also draws a grid...
      */
     synchronized public void paintComponent(Graphics g) {
-	g.setColor(Color.white);
-	g.fillRect(0,0,width*tileWidth, height*tileHeight);
+	clearBackground(g);
 
 	//as the tiles are drawn with the origin at the
 	//bottom right, but the component's origin is the top left,
 	//we need to set the offset so we can see the tiles
 	map.render(g, viewport.getViewPosition(), viewport.getSize());
 
-
-	//map.render(g, -tileWidth, -tileHeight);
-	if(showGrid)
-	{
-	    g.setColor(Color.gray);
-	    for(int i=0; i<width; i++)
-	    {
-		g.drawLine(i*tileWidth, 0, i*tileWidth, height*tileHeight);
-	    }
-
-	    for(int j=0; j<height; j++)
-	    {
-		g.drawLine(0,j*tileHeight, width*tileWidth, j*tileHeight);
-	    }
+	if(showGrid) {
+	    renderGrid(g);
 	}
+	renderBoarder(g);
+
+    }
+
+    private void clearBackground(Graphics g) {
+	g.setColor(Color.white);
+	g.fillRect(0,0,width*tileWidth, height*tileHeight);
+    }
+
+    private void renderBoarder(Graphics g) {
 	((Graphics2D)g).setStroke(new BasicStroke(2));
 	g.setColor(Color.black);
 	g.drawLine(0, 0, width * tileWidth, 0);
 	g.drawLine(0, 0, 0, height * tileHeight);
 	g.drawLine(width * tileWidth, 0, width * tileWidth, height * tileHeight);
 	g.drawLine(0, height * tileHeight, width * tileWidth, height * tileHeight);
+    }
 
+    private void renderGrid(Graphics g) {
+	g.setColor(Color.gray);
+	for(int i=0; i<width; i++)
+	{
+	g.drawLine(i*tileWidth, 0, i*tileWidth, height*tileHeight);
+	}
+
+	for(int j=0; j<height; j++)
+	{
+	g.drawLine(0,j*tileHeight, width*tileWidth, j*tileHeight);
+	}
     }
 
     /**
      * change the given tile to the one selected in the map editor.
      */
-    public void mapClicked(int x, int y) {
-	x = x/tileWidth;
-	y = y/tileHeight;
-	if(x < map.getWidth() && x >= 0
-		&& y < map.getHeight() && y >= 0) {
-
-	    if(mapEdit.getPaintMode() == MapEdit.PAINT_NORMAL) {
-		map.setTile(x, y, activeLayer, mapEdit.getSelectedTile());
-		stateChanged = true;
-	    } else if(mapEdit.getPaintMode() == MapEdit.PAINT_FILL) {
-		recursiveFlood(x, y, activeLayer, map.getTile(x, y, activeLayer), mapEdit.getSelectedTile());
+    public void mapClicked(int clickX, int clickY) {
+	int tileX = clickX/tileWidth;
+	int tileY = clickY/tileHeight;
+	if(isClickInMap(tileX, tileY)) {
+	    if ( map.getLayer(activeLayer).getLayerType().equals(LayerType.EVENT)) {
+		updateEventAt(tileX, tileY, activeLayer);
 	    } else {
-		System.out.println("Invalid paint mode");
+		paintTile(tileX, tileY);
 	    }
+		
 	}
     }
 
+    private void paintTile(int tileX, int tileY) {
+	if(mapEdit.getPaintMode() == MapEdit.PAINT_NORMAL) {
+	    map.setTile(tileX, tileY, activeLayer, mapEdit.getSelectedTile());
+	    stateChanged = true;
+	} else if(mapEdit.getPaintMode() == MapEdit.PAINT_FILL) {
+	    recursiveFlood(tileX, tileY, activeLayer, map.getTile(tileX, tileY, activeLayer), mapEdit.getSelectedTile());
+	} else {
+	    System.out.println("Invalid paint mode");
+	}
+    }
 
+    private boolean isClickInMap(int tileX, int tileY) {
+	return tileX < map.getWidth() && tileX >= 0
+		&& tileY < map.getHeight() && tileY >= 0;
+    }
+
+    private void updateEventAt(int x, int y, int layer) {
+	Event e =  map.getEvent(x, y, layer);
+	if ( e == null ) {
+	    e = map.addEvent( x, y, layer);
+	}
+	mapEdit.editEvent( e );
+    }
 
     /* Flood fill operation from http://en.wikipedia.org/wiki/Flood_fill
      * The section used is as follows:
@@ -222,17 +251,19 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
     boolean btn2Pressed = false;
     int oldX = 0;
     int oldY = 0;
+
     public void mousePressed(MouseEvent e) {
 	if(stateChanged) {
 	    saveUndoState();
 	    stateChanged = false;
 	}
 	switch(e.getButton()) {
-	case MouseEvent.BUTTON1: btn1Pressed = true;
-	mapClicked(e.getX(), e.getY());
-	this.repaint();
-	break;
-	/*
+	case MouseEvent.BUTTON1: 
+	    btn1Pressed = true;
+	    mapClicked(e.getX(), e.getY());
+	    this.repaint();
+	    break;
+	    /*
 			default:
 				btn2Pressed = true;
 				Dimension d = viewport.getSize();
@@ -240,7 +271,7 @@ implements MouseListener, MouseMotionListener, MapChangeListener {
 				viewport.setViewPosition(newPoint);
 				viewport.repaint();
 				break;
-	 */
+	     */
 
 
 	default:

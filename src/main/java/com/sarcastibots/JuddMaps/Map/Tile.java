@@ -7,8 +7,7 @@ import javax.swing.*;
  * a Tile is simply a square of land or object on a map.
  * Tiles have an image, a name, and a type. They also have a number.
  */
-public class Tile
-{
+public class Tile {
   /* Allow global disable of colorization effects on tiles */
   public static boolean effects_enabled = true;
   
@@ -20,8 +19,8 @@ public class Tile
   float effect_hue;
   float effect_sat;
   
-  private int imageWidth = 0;
-  private int imageHeight = 0;
+  int imageWidth = 0;
+  int imageHeight = 0;
   int zoomWidth, zoomHeight;
   
   String name = null;
@@ -50,7 +49,6 @@ public class Tile
     zoomWidth = imageWidth;
     zoomHeight = imageHeight;
     
-    //System.out.println(imageWidth);
   }
   
   public Tile(int number, String path, String name, String type, String info)
@@ -158,14 +156,11 @@ public class Tile
    * Copies a fresh effect image, which is a zoomed version
    * from the original.
    **/
-  void initEffectImage()
-  {
-    //System.out.println("Zoom is: " + effect_zoom);
+  void initEffectImage() {
     effectImage = new BufferedImage((int)(imageWidth * effect_zoom), (int)(imageHeight * effect_zoom), BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = (Graphics2D)effectImage.getGraphics();
     g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     g.drawImage(image, 0, 0, (int)(imageWidth * effect_zoom), (int)(imageHeight * effect_zoom), null, (ImageObserver)null);
-    //effectImage.getGraphics().drawImage(image, 0, 0, (ImageObserver)null);
   }
   
   /**

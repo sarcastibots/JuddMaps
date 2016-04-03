@@ -49,8 +49,7 @@ implements ActionListener, GraphicsBankChangeListener {
 
     FileDropHandler fileDrop;
 
-    public TileChooser(GraphicsBank gfx)
-    {
+    public TileChooser(GraphicsBank gfx) {
 	tilePanel = new JPanel();
 	layout = new GridLayout(0,5);
 	tilePanel.setLayout(layout);
@@ -175,15 +174,10 @@ implements ActionListener, GraphicsBankChangeListener {
 	tilePanel.removeAll();
 	group = new ButtonGroup();
 
-	TileButton b = new TileButton(null);
-	tilePanel.add(b);
-	group.add(b);
-	count ++;
-
 	Iterator<Tile> i = gfx.iterator();
 	while(i.hasNext())
 	{
-	    b = new TileButton((Tile)i.next());
+	    TileButton b = new TileButton((Tile)i.next());
 	    tilePanel.add(b);
 	    group.add(b);
 	    count ++;
@@ -281,7 +275,7 @@ implements ActionListener, GraphicsBankChangeListener {
     void showProperties(Tile t) {
 	propertyTile = t;
 
-	if(t != null) {
+	if(t.getNumber() != 0) {
 	    userText.setText(t.getInfo());
 	    tileNumber.setValue(new Integer(t.getNumber()));
 	    tileName.setText(t.getName());
